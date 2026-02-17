@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/libs/all.min.css">
+    <link rel="stylesheet" href="../css/scan.css">
+    <title>Scan</title>
+  </head>
+<body>
+
+<nav class="navbar">
+  <div class="container-fluid d-flex justify-content-around">
+    <a href="#" class="navbar-brand" style="display:flex; align-items:center; gap:10px; font-weight: 700;"><i class="fa fa-qrcode" style="font-size:30px; color:#3c9659;"></i>Scan QR Code</a>
+    <div style="font-size:17px; font-weight: 500; color:blueviolet" class="hello-user">
+        Hello User!
+    </div>
+</div>
+</nav>
+
+ <!-- camera -->
+  <div id="cameraOverlay">
+
+    <div id="div-close-btn" class="bg-black">
+    <button id="closeOverlay" type="button" class="btn-close" aria-label="Close"></button>
+    </div>
+
+    <div id="reader"></div>
+
+    
+    
+  </div>
+
+  <!-- // camera // -->
+
+
+
+<div class="container" style="margin-top: 70px;">
+    <div class="row mt-4"> 
+        <div class=" QR col-lg-8 justify-content-center p-4">
+            <div class=" scanner row justify-content-center">
+            <div class="image-qr col-lg-10 d-flex justify-content-center"><img src="../images/qr-code.png" alt="" class="img-fluid"></div>
+            <button type="button" class="scan-btn btn btn-success mt-4 col-lg-4">Scan QR Code</button>
+            </div>
+        </div>
+        <div class="links col-lg-4 p-4 d-flex justify-content-center">
+            <div class="row  container g-4 align-items-center">
+            <h3 class="d-none d-lg-block">Scan QR Code</h3>
+                <div class="card col-lg-12 col mb-4" style="width: 18rem;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                </ul>
+                </div>
+                <button class="scan-btn btn btn-success mt-4 col-log-4 d-md-none d-lg-block d-none">Scan QR Code</button>
+                <div class="card col-lg-12 d-md-none d-lg-block d-none" style="width: 18rem;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                </ul>
+                </div>
+           
+           
+            </div>
+        </div>
+        
+    </div>
+</div>
+    
+<small class="text-body-secondary" style=" display:block; margin:10px;">Point your camera at the QR code to record attendance</small>
+
+<footer class="bg-light text-center text-muted py-2 mt-5 border-top">
+  © 2026 <span class="fw-semibold">QR Scanner</span> — All Rights Reserved
+  <span class="dev-name"></span>
+  <p style="text-align:center; font-size:14px; color:#555;">
+  Developed by <i class="fa fa-code" style="color:#0d6efd;"></i> Eng.Mohamed Ahmed
+</p>
+
+</footer>
+
+
+<div class="toast animationToast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <i class="fa fa-qrcode" style="display:block; font-size:25px; color:#3c9659;"></i><strong style="margin-left: 6px;" class="me-auto">Scan QR Code</strong>
+    <small class="text-body-secondary">11 mins ago</small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    <div class="row">
+      <div class="scan-state col-6"></div>
+      <div class="user-name d-flex justify-content-center col-6"></div>
+    </div>
+  </div>
+</div>
+
+    
+
+    <!-- Bootstrap JS -->
+    <script src="../js/libs/bootstrap.bundle.min.js"></script>
+    <script src="../js/libs/all.min.js"></script>
+
+
+    <!-- jwt decode -->
+    <script src="../js/libs/jwt-decode.min.js"></script>
+    
+    <!-- Axios -->
+     <script src="../js/libs/axios.min.js"></script>
+  
+    <!-- scan library -->
+    <script src="../js/libs/html5-qrcode.min.js"></script>
+
+    <!-- Scan.js -->
+    <script src="../js/scan.js"></script>
+</body>
+</html>
+
+
+
+
+

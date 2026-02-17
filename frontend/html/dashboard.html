@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/libs/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <title>Dashboard</title>
+</head>
+<body>
+<!-- Modal add user -->
+<div class="modal fade modal-form" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+
+  <form class="row g-3 modal-add-user">
+  <div class="col-md-6 div-email">
+    <label for="inputEmail" class="form-label">Email</label>
+    <input type="email" class="form-control email" id="inputEmail">
+    <div id="email-validate" class="invalid-feedback">
+     <!-- validate email -->
+    </div>
+  </div>
+  <div class="col-md-6 div-password">
+    <label for="inputPassword" class="form-label">Password</label>
+    <input type="password" class="form-control password" id="inputPassword">
+      <div id="password-validate" class="invalid-feedback">
+     <!-- validate password -->
+    </div>
+  </div>
+  <div class="col-12 div-first">
+    <label for="first-name" class="form-label">First Name</label>
+    <input type="text" class="form-control firstname" id="first-name">
+      <div id="firstname-validate" class="invalid-feedback">
+     <!-- validate firstname -->
+    </div>
+  </div>
+  <div class="col-12 div-last">
+    <label for="last-name" class="form-label">Last Name</label>
+    <input type="text" class="form-control lastname" id="last-name">
+       <div id="lastname-validate" class="invalid-feedback">
+     <!-- validate lastname -->
+    </div>
+  </div>
+  <div class="col-md-4 div-stage">
+    <label for="stage" class="form-label">Stage</label>
+    <select id="stage" class="form-select stage">
+      <option selected>Choose...</option>
+      <option value="الثالث الاعدادي">الثالث الاعدادي</option>
+      <option value="الاول الثانوي">الاول الثانوي</option>
+      <option value="الثاني الثانوي">الثاني الثانوي</option>
+      <div id="stage-validate" class="invalid-feedback">
+      <!-- validate stage --> 
+      </div>
+    </select>
+  </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn btn-outline-danger add-user" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-outline-success">Add User</button>
+      </div>
+</form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--// Modal add user// -->    
+
+<!-- Modal export file -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--// Modal export file// -->
+
+  <!-- navbar -->
+<nav class="navbar bg-body-tertiary fixed-top">
+  <div class="container-fluid d-flex">
+    <a class="navbar-brand" href="#">Admin Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end navbar-dark bg-dark" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a data-target="dashboard" class="nav-link active" aria-current="page" href="#"><i class="fa-solid fa-house" style="font-size:20px;"></i> Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a data-target="students" class="nav-link" href="#"><i class="fa-solid fa-user"></i> Students</a>
+          </li>
+          <li class="nav-item">
+            <a data-target="attend" class="nav-link" href="#"><i class="fa-solid fa-circle-check"></i> Attendance</a>
+          </li>
+          <li class="nav-item">
+            <a data-target="qr" class="nav-link" href="#"><i class="fa-solid fa-qrcode"></i> QR Scanner</a>
+          </li>
+          <li class="nav-item">
+            <a data-target="reports" class="nav-link" href="#"><i class="fa-solid fa-chart-area"></i> Reports</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"><i class="fa-solid fa-power-off"></i> Logout</a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- //navbar// -->
+
+
+<br><br><br>
+<!-- dashboard section -->
+<section id="dashboard" class="section active">
+  <div class="container">
+
+<div class="row g-2">
+  <div class="col-sm-3 mb-sm-0">
+    <div class="card bg-primary bg-gradient">
+      <div class="card-body row">
+        <div class="col-sm-3" style="text-align: center; font-size:30px; color:#ffffff;">
+        <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+
+        <div class="col student-infrom">
+        <h5 class="card-title">Total Student</h5>
+        <p class="card-text">250</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card bg-success bg-gradient">
+      <div class="card-body row">
+        <div class="col-sm-3" style="text-align: center; font-size:30px; color:#ffffff;">
+        <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <div class="col present-infrom">
+        <h5 class="card-title">Present Today</h5>
+        <p class="card-text">180</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card bg-danger bg-gradient">
+      <div class="card-body row">
+        <div class="col-sm-3" style="text-align: center; font-size:30px; color:#ffffff;">
+        <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+
+        <div class="col absent-infrom">
+        <h5 class="card-title">Absent Today</h5>
+        <p class="card-text">70</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card bg-warning bg-gradient">
+      <div class="card-body row">
+        <div class="col-sm-3" style="text-align: center; font-size:30px; color:#ffffff;">
+        <i class="fa-solid fa-camera"></i>
+        </div>
+
+        <div class="col scan-infrom">
+        <h5 class="card-title">Scan Sessions</h5>
+        <p class="card-text">5</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<br>
+<table class="table  table table-striped table-hover">
+  <h5 class="mt-3">Attendance Records</h5>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Time</th>
+      <th scope="col">Stage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>John</td>
+      <td>Doe</td>
+      <td>@social</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</div>
+ <footer class="footer-student bg-light d-flex justify-content-around text-muted py-2  border-top">
+  <!-- Button trigger modal add user -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  <i class="fa-solid fa-user-plus"></i> Add Student
+</button>
+
+
+ 
+<!-- Button trigger modal export file -->
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <i class="fa-solid fa-file-export"></i> Export Report
+</button>
+
+
+ </footer>
+
+</section>
+<!--// dashboard section //-->
+
+<section id="students" class="section">students</section>
+<section id="attend" class="section">attend</section>
+<section id="qr" class="section">qr</section>
+<section id="reports" class="section">reports</section>
+
+
+
+  
+
+<div class="alert alert-success d-none" role="alert">
+  A simple success alert—check it out!
+</div>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="../js/libs/bootstrap.bundle.min.js"></script>
+    <script src="../js/libs/all.min.js"></script>
+
+
+    <!-- jwt decode -->
+    <script src="../js/libs/jwt-decode.min.js"></script>
+    
+    <!-- Axios -->
+     <script src="../js/libs/axios.min.js"></script>
+
+        <!-- dashboard.js -->
+    <script src="../js/dashboard.js"></script>
+
+</body>
+</html>

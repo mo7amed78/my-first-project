@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/libs/all.min.css">
+    <link rel="stylesheet" href="../css/loginStyle.css">
+    <title>Login</title>
+</head>
+  <body>
+        <div class="hello-msg-mobile" style="text-align:center;">
+        <h1 style="font-family:sans-serif; font-weight:700; color:#ffffff; font-size:35px;">welcome Back!</h1>
+        <h5 class="subtitle">Please login to your account</h5>
+        </div>
+
+        <div id="login-form" class="card">
+            <div class="login-back">
+                <div class="login">
+                    <div class="hello-msg">
+                    <h2 style="font-family:sans-serif; font-weight:700;">welcome Back!</h2>
+                    <h5 class="subtitle">Please login to your account</h5>
+                    </div>
+                    <br>
+                    <form>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input placeholder="your email..." type="email" class="form-control form-control-lg " id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <div class="invalid-feedback email">
+                            <!-- error msg email-->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input placeholder="your password..." type="password" class="form-control form-control-lg" id="exampleInputPassword1">
+                        <div class="invalid-feedback password">
+                            <!-- error msg password -->
+                            </div>
+                    </div>
+                    <button style="width:260px; height:50px; font-weight:700" type="submit" class="btn btn-primary mt-2 login-btn">Login</button>
+                    </form>   
+                    
+                </div>
+            </div> 
+                <div class="pic-login">
+                </div>
+        </div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="../js/libs/bootstrap.bundle.min.js"></script>
+    <script src="../js/libs/all.min.js"></script>
+
+
+    <!-- jwt decode -->
+    <script src="../js/libs/jwt-decode.min.js"></script>
+    
+    <!-- Axios -->
+     <script src="../js/libs/axios.min.js"></script>
+
+        <!-- login.js -->
+    <script src="../js/login.js"></script>
+  </body>
+</html>
