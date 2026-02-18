@@ -136,7 +136,8 @@ axios.post(`${Base_URL}/api/scan`,bodyParams,{
         let scannedAt = ` time ${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
 
         let name = `${decode.firstName} ${decode.lastName}`;
-        console.log(scannedAt)
+        
+        
         toast(scannedAt,name,attended);
     }else if(attended === 200){
         errMesg = response.data.Message;

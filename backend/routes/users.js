@@ -48,7 +48,11 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
         
     }
 
-    res.json({users});
+    res.json({
+        count:users.length,
+        users
+    });
+    
 }));
 
 

@@ -80,3 +80,46 @@ nav{
     
 }
 
+
+
+/** style section qr **/
+
+#qr {
+    min-height: 650px;
+}
+
+.qr-content{
+    height:650px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+
+.qr-content p{
+    display:block;
+    height:100px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:7px;
+    background-color: #ffffff;
+    padding:60px 30px;
+    border-radius: 10px;
+    box-shadow:5px 5px 5px rgba(0,0,0,0.1);
+}
+
+.qr-content button{
+    width:300px;
+    padding:8px;
+    font-weight:600;
+}
+
+.qr-content input {
+    width: 300px;
+    padding: 7px;
+    border:1px solid #00000074;
+    border-radius:5px;
+    outline:0;
+}

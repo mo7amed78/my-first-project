@@ -1,3 +1,16 @@
+
+    const token = localStorage.getItem('token');
+
+    if(!token){
+        console.log("invalid token");
+    }
+
+    const BASE_URL =
+    window.location.hostname === "localhost"
+    ?'http://192.168.1.7:3000'
+    :window.location.origin;
+
+
 //--- open sections--- //
 let sectionBtn = document.querySelectorAll('.offcanvas-body ul li .nav-link');
 let openSection = document.querySelectorAll('.section');
@@ -37,8 +50,8 @@ window.addEventListener('scroll', () => {
 
 
 //---add students---//
-
 let form = document.querySelector('.modal-add-user');
+let modalAddBtn = document.querySelector('.footer-student .modal-user-btn');
 
 function addUser(){
     let email = document.querySelector('.modal-add-user .div-email #inputEmail');
@@ -46,13 +59,6 @@ function addUser(){
     let firstName = document.querySelector('.modal-add-user .div-first #first-name');
     let lastName = document.querySelector('.modal-add-user .div-last #last-name');
     let stage = document.querySelector('.modal-add-user .div-stage #stage');
-    // console.log(email,password,firstName,lastName,stage)
-    const token = localStorage.getItem('token');
-
-    const BASE_URL =
-    window.location.hostname === "localhost"
-    ?'http://192.168.1.7:3000'
-    :window.location.origin;
 
     let bodyParmas = {
         email:email.value,
@@ -77,10 +83,22 @@ function addUser(){
 
             if(statusCode_state === 201){
 
+                
+                // reset and vlidate success!
+            document.querySelectorAll('.modal-add-user input').forEach(input=>{
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            });
+
+            document.querySelectorAll('.modal-add-user .invalid-feedback').forEach(msg=>{
+                msg.innerHTML = '';
+            });
+
+
+
                 const modalUser = document.querySelector('.modal-form');
                 const modalInstance = bootstrap.Modal.getOrCreateInstance(modalUser);
-                modalInstance.hide();
-                form.reset();
+                setTimeout(()=>{modalInstance.hide();},1000);
                 alertText.innerHTML = msg;
                 alertText.classList.remove('d-none');
 
@@ -94,6 +112,15 @@ function addUser(){
             
             
         }).catch((error)=>{
+            //reset error 
+            document.querySelectorAll('.modal-add-user input').forEach(input=>{
+                input.classList.remove('is-invalid');
+            });
+
+            document.querySelectorAll('.modal-add-user .invalid-feedback').forEach(msg=>{
+                msg.innerHTML = '';
+            });
+
             err_msg = error.response.data.message.toLowerCase();
             
             let inputs = ["email" ,"password" , "firstname", "lastname" , "stage"];
@@ -117,14 +144,54 @@ form.addEventListener('submit',(e)=>{
     addUser();
 });
 
+modalAddBtn.addEventListener('click',()=>{
+    //reset all inputs and error message here and reset form
+    document.querySelectorAll('.modal-add-user input').forEach(input=>{
+        input.classList.remove('is-invalid','is-valid');
+    });
+
+    document.querySelectorAll('modal-add-user .invalid-feedback').forEach(msg=>{
+        msg.innerHTML = '';
+    });
+    form.reset();
+});
+
+
+
 function validateNewStudent(id,message){
     let validation = document.getElementById(`${id}-validate`);
     let inputValidate = document.querySelector(`.${id}`);
 
-    
     inputValidate.classList.add('is-invalid');
     validation.innerHTML = message;
     
 }
-
 //---add students---//
+
+
+
+//!update soon for pagination
+//--- all data about student in cards ---//
+    function getAllStudent(){
+        let num_Student = document.querySelector('.student-infrom p');
+
+        axios.get(`${BASE_URL}/api/users`,{
+            headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            }
+        }).then((response)=>{
+
+            let count = response.data.count;
+            num_Student.innerHTML = count;
+            
+        }).catch((error)=>{
+            console.log(error);
+        });
+    }
+
+    getAllStudent();
+//--- all data about student in cards ---//
+
+
+

@@ -152,7 +152,7 @@
 
         <div class="col student-infrom">
         <h5 class="card-title">Total Student</h5>
-        <p class="card-text">250</p>
+        <p class="card-text"> <!--number of student --> 0 </p>
         </div>
 
       </div>
@@ -207,8 +207,23 @@
 
 
 <br>
-<table class="table  table table-striped table-hover">
-  <h5 class="mt-3">Attendance Records</h5>
+
+  <div class="row d-flex align-items-center">
+  <h5 class="mt-3 col-4">Attendance Records</h5>
+
+      <select id="stage" class="form-select stage-choose col-4">
+      <option selected>Choose...</option>
+      <option value="الثالث الاعدادي">الثالث الاعدادي</option>
+      <option value="الاول الثانوي">الاول الثانوي</option>
+      <option value="الثاني الثانوي">الثاني الثانوي</option>
+    </select>
+
+  </div>
+
+
+<table class="table  table-info table-striped table-hover">
+  
+
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -218,24 +233,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>John</td>
-      <td>Doe</td>
-      <td>@social</td>
-    </tr>
+
+
   </tbody>
 </table>
 
@@ -244,7 +243,7 @@
 </div>
  <footer class="footer-student bg-light d-flex justify-content-around text-muted py-2  border-top">
   <!-- Button trigger modal add user -->
-<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+<button type="button" class="btn btn-success modal-user-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
   <i class="fa-solid fa-user-plus"></i> Add Student
 </button>
 
@@ -261,9 +260,34 @@
 </section>
 <!--// dashboard section //-->
 
+
+
 <section id="students" class="section">students</section>
 <section id="attend" class="section">attend</section>
-<section id="qr" class="section">qr</section>
+
+
+<!-- qr section -->
+<section id="qr" class="section">
+
+  <div class="qr-content">
+<div style="min-height: 120px;">
+  <div class="collapse collapse-horizontal" id="collapseWidthExample">
+    <div class="card card-body qrcode" style="width: 300px;">
+      <img class="qrcode-img">
+    </div>
+  </div>
+</div> 
+<p>
+  <input class="input-qr" style="display:block" type="text" placeholder="Enter text or url">
+  <button class="btn btn-primary generate-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+    Generate QR Code
+  </button>
+</p>
+</div>
+</section>
+<!--// qr section //-->
+
+
 <section id="reports" class="section">reports</section>
 
 
@@ -287,6 +311,9 @@
     <!-- Axios -->
      <script src="../js/libs/axios.min.js"></script>
 
+
+        <!-- Qrcode.js -->
+     <script src="../js/QRcode.js"></script>
         <!-- dashboard.js -->
     <script src="../js/dashboard.js"></script>
 
