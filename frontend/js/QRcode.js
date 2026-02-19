@@ -43,21 +43,37 @@ generateBtn.addEventListener('click',()=>{
 
 
 //--- put data in table --//
-function filterAbsence(filterStage){
+let stageChoose = document.querySelector('.stage-choose');
+    
+
+function filterAbsence(){
     let table = document.querySelector('#dashboard .table tbody');
+    let number = document.querySelector('.stage-div .count');
+    let lectureName = document.querySelector('.stage-div .lecture-name');
+
     
     let filterLectureId = localStorage.getItem('encodedText');
+    let filterStage =  localStorage.getItem('selectedValue');
 
+    lectureName.innerHTML = `
+        Attendance Records (${filterLectureId})
+    `
+     
 
-axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filterLectureId=${filterLectureId}`,{
+    axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filterLectureId=${filterLectureId}`,{
     headers:{
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
     }
-}).then((response)=>{
+    }).then((response)=>{
 
-    console.log(response);
+    // remove table first 
+    table.innerHTML = "";
+
     let students = response.data.filterScan;
+    let numOfStudent = response.data.count;
+
+    number.innerHTML = `number : ${numOfStudent}`;
 
      let counter = 0;
 
@@ -108,9 +124,44 @@ axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filter
         `
     }
 }).catch((error)=>{
-    console.log(error.response);
-})
+
+    notFoundMsg = error.response.data.message;
+
+    
+    table.innerHTML = `
+    <tr>
+    <th scope="row"></th>
+
+    <td>${notFoundMsg}</td>
+    <td></td>
+    <td></td>
+    </tr>
+    
+    `;
+});
 
 }
-filterAbsence('الثاني الثانوي');
+
+stageChoose.addEventListener('change',(e)=>{
+    let selectedValue = e.target.value;
+    localStorage.setItem('selectedValue',selectedValue);
+    filterAbsence();
+
+});
+
+
+
+// if page Refresh
+document.addEventListener('DOMContentLoaded',()=>{
+    let saveChanges =  localStorage.getItem('selectedValue');
+
+    if(saveChanges){
+        stageChoose.value = saveChanges;
+        filterAbsence();
+    }
+});
+
+
 //--- put data in table --//
+
+

@@ -16,6 +16,7 @@ let sectionBtn = document.querySelectorAll('.offcanvas-body ul li .nav-link');
 let openSection = document.querySelectorAll('.section');
 let closeNav = document.querySelector('.offcanvas-header .btn-close');
 
+
 sectionBtn.forEach((section)=>{
     section.addEventListener('click',(e)=>{
         e.preventDefault();
@@ -24,8 +25,10 @@ sectionBtn.forEach((section)=>{
         openSection.forEach(o=> o.classList.remove('active'));
         closeNav.click();
 
+      
         section.classList.add('active');
         document.getElementById(section.dataset.target).classList.add('active');
+
         
     });
 });
@@ -170,8 +173,9 @@ function validateNewStudent(id,message){
 
 
 
-//!update soon for pagination
+
 //--- all data about student in cards ---//
+//!update soon for pagination
     function getAllStudent(){
         let num_Student = document.querySelector('.student-infrom p');
 
@@ -190,6 +194,32 @@ function validateNewStudent(id,message){
         });
     }
 
+    function presentAndAbsent(){
+        present_student = document.querySelector('.present-infrom p');
+        absence_student = document.querySelector('.absent-infrom p');
+
+        let filterLectureId =localStorage.getItem('encodedText');
+
+        axios.get(`${BASE_URL}/api/filter?filterLectureId=${filterLectureId}`,{
+            headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            }
+        }).then((response)=>{
+                console.log(response);
+                let countPresent = response.data.countPresent;
+                let countAbsence = response.data.countAbsence;
+
+                 present_student.innerHTML = countPresent;
+                 absence_student.innerHTML = countAbsence;
+
+        }).catch((error)=>{
+            console.log(error);
+
+        });
+    }
+
+    presentAndAbsent();
     getAllStudent();
 //--- all data about student in cards ---//
 

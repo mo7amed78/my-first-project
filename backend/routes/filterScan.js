@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Scan} = require('../models/Scan')
+const {Scan} = require('../models/Scan');
+const {User} = require('../models/User');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 const asyncHandler = require('express-async-handler');
@@ -15,22 +16,31 @@ const asyncHandler = require('express-async-handler');
  */
 router.get('/',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
-    const {filterStage} = req.query ;
+    const {filterLectureId} = req.query ;
 
     const filter = {};
 
-    if(filterStage){
-        filter.stage = filterStage ;
+    if(filterLectureId){
+        filter.lectureId = filterLectureId ;
     }
 
     const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage").select("-__v");
+    const totalStudent = await User.countDocuments();
 
     if(filterScan.length === 0){
-        return res.status(404).json({message:"لا يوجد نتائج حالياً"});
+        return res.status(200).json({
+            countPresent:0,
+            countAbsence:totalStudent,
+             message:"لا يوجد نتائج حالياً"
+            });
     }
 
 
-   res.json({filterScan});
+   res.json({
+    countPresent:filterScan.length,
+    countAbsence:totalStudent - filterScan.length,
+    filterScan
+});
    
 }));
 
@@ -45,7 +55,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
     const {filterStage,filterLectureId} = req.query ;
-    console.log(filterStage,filterLectureId)
+
     const filter = {};
 
     if(filterStage){

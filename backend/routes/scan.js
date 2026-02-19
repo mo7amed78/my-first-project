@@ -52,7 +52,11 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
         return res.status(404).json({message:"لا يوجد نتائج حالياً"});
     }
 
-    res.json({scans});
+    res.json({
+        count:scans.length,    
+        scans
+        
+    });
 }));
 
 
