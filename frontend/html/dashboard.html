@@ -25,14 +25,14 @@
   <form class="row g-3 modal-add-user">
   <div class="col-md-6 div-email">
     <label for="inputEmail" class="form-label">Email</label>
-    <input type="email" class="form-control email" id="inputEmail">
+    <input type="email" class="form-control email" id="inputEmail" autocomplete="username">
     <div id="email-validate" class="invalid-feedback">
      <!-- validate email -->
     </div>
   </div>
   <div class="col-md-6 div-password">
     <label for="inputPassword" class="form-label">Password</label>
-    <input type="password" class="form-control password" id="inputPassword">
+    <input type="password" class="form-control password" id="inputPassword" autocomplete="new-password">
       <div id="password-validate" class="invalid-feedback">
      <!-- validate password -->
     </div>
@@ -110,7 +110,7 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <a data-target="dashboard" class="nav-link active" aria-current="page" href="#"><i class="fa-solid fa-house" style="font-size:20px;"></i> Dashboard</a>
+            <a data-target="dashboard" class="nav-link" aria-current="page" href="#"><i class="fa-solid fa-house" style="font-size:20px;"></i> Dashboard</a>
           </li>
           <li class="nav-item">
             <a data-target="students" class="nav-link" href="#"><i class="fa-solid fa-user"></i> Students</a>
@@ -139,7 +139,7 @@
 
 <br><br><br>
 <!-- dashboard section -->
-<section id="dashboard" class="section active">
+<section id="dashboard" class="section">
 <div class="container">
 
 <div class="row g-2">

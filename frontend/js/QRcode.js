@@ -55,11 +55,20 @@ function filterAbsence(){
     let filterLectureId = localStorage.getItem('encodedText');
     let filterStage =  localStorage.getItem('selectedValue');
 
+    if(filterLectureId){
     lectureName.innerHTML = `
         Attendance Records (${filterLectureId})
     `
-     
+    }else{
+        lectureName.innerHTML = `
+        Attendance Records 
+    `
+        return;
+    }
 
+
+
+     
     axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filterLectureId=${filterLectureId}`,{
     headers:{
         'Content-Type': 'application/json',
@@ -125,8 +134,9 @@ function filterAbsence(){
     }
 }).catch((error)=>{
 
-    notFoundMsg = error.response.data.message;
+   let  notFoundMsg = error.response?.data?.message || "لا يوجد بيانات حالياً"
 
+    
     
     table.innerHTML = `
     <tr>
@@ -154,10 +164,16 @@ stageChoose.addEventListener('change',(e)=>{
 // if page Refresh
 document.addEventListener('DOMContentLoaded',()=>{
     let saveChanges =  localStorage.getItem('selectedValue');
+    let saveText  = localStorage.getItem('encodedText');
+    let saveURL = localStorage.getItem('url');
 
     if(saveChanges){
         stageChoose.value = saveChanges;
         filterAbsence();
+    }
+
+    if(saveText){
+        textQRCode.value = saveText;
     }
 });
 

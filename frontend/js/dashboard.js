@@ -15,22 +15,37 @@
 let sectionBtn = document.querySelectorAll('.offcanvas-body ul li .nav-link');
 let openSection = document.querySelectorAll('.section');
 let closeNav = document.querySelector('.offcanvas-header .btn-close');
+let navContent = document.querySelector('.offcanvas-body .navbar-nav')
 
+let activeSection = localStorage.getItem('id');
 
-sectionBtn.forEach((section)=>{
-    section.addEventListener('click',(e)=>{
+if(activeSection){
+document.getElementById(activeSection).classList.add('active');
+document.querySelector(`[data-target="${activeSection}"]`).classList.add('active');
+}else{
+document.getElementById("dashboard").classList.add('active');
+document.querySelector(`[data-target="dashboard"]`).classList.add('active');
+}
+
+navContent.addEventListener('click',(e)=>{
+    
+    if(e.target.classList.contains('nav-link')){
         e.preventDefault();
 
         sectionBtn.forEach(s=>s.classList.remove('active'));
-        openSection.forEach(o=> o.classList.remove('active'));
+        openSection.forEach(o=>o.classList.remove('active'));
         closeNav.click();
+        
 
-      
-        section.classList.add('active');
-        document.getElementById(section.dataset.target).classList.add('active');
+        e.target.classList.add('active');
+
+        localStorage.setItem('id',e.target.dataset.target);
+
+        document.getElementById(e.target.dataset.target).classList.add('active');
 
         
-    });
+    }
+
 });
 //--- open sections--- //
 
@@ -195,10 +210,16 @@ function validateNewStudent(id,message){
     }
 
     function presentAndAbsent(){
-        present_student = document.querySelector('.present-infrom p');
-        absence_student = document.querySelector('.absent-infrom p');
+        let present_student = document.querySelector('.present-infrom p');
+        let absence_student = document.querySelector('.absent-infrom p');
 
         let filterLectureId =localStorage.getItem('encodedText');
+
+        if(!filterLectureId){
+                 present_student.innerHTML = 0;
+                 absence_student.innerHTML = 0;
+                 return;
+        }
 
         axios.get(`${BASE_URL}/api/filter?filterLectureId=${filterLectureId}`,{
             headers:{
