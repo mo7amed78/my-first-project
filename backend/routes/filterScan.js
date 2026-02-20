@@ -65,7 +65,6 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     if(filterLectureId){
         filter.lectureId = filterLectureId;
     }
-
     const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage").select("-__v");
 
     if(filterScan.length === 0){
