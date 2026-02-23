@@ -25,7 +25,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     }
 
     const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage").select("-__v");
-    const totalStudent = await User.countDocuments();
+    const totalStudent = await User.countDocuments({isAdmin:false});
 
     if(filterScan.length === 0){
         return res.status(200).json({

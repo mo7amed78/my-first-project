@@ -32,24 +32,34 @@ router.get('/profile',verifyToken,asyncHandler( async (req,res)=>{
 
 
 /**
- * @desc Get ALL users
+ * @desc Get ALL users use pagination
  * @route /api/users
  * @method GET
  * @access private (Admin Only)
  */
 
 router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 10;
+    const skip = (page - 1) * limit;
+    
+   
+    const users = await User.find({isAdmin:false}).skip(skip).limit(limit).select("-password -isAdmin -__v");
+    const total = await User.countDocuments({isAdmin:false});
 
-    const users = await User.find().select("-password -isAdmin -__v");
+    
 
     // check if no users in db
-    if(users.length === 0){
+    if(users.length === 0 || total === 0){
        return res.status(404).json({message:"لا يوجد مستخدمين"});
         
     }
 
     res.json({
-        count:users.length,
+        page:page,
+        limit:limit,
+        count:total,
+        totalPages:Math.ceil(total / limit),
         users
     });
     
@@ -144,6 +154,10 @@ router.delete('/:userId',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
         deletedUser
     });
 }));
+
+
+
+
 
 
 module.exports = router;

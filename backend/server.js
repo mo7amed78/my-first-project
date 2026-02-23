@@ -7,6 +7,7 @@ const authPath = require('./routes/auth');
 const userPath = require('./routes/users');
 const scanPath = require('./routes/scan');
 const filterScanPath = require('./routes/filterScan');
+const searchPath = require('./routes/search');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
@@ -24,10 +25,12 @@ mongoose
 
 //middleware
 app.use(express.json());
+
 app.use(cors());
 
 // Static folders
 app.use(express.static(path.join(__dirname, '../frontend')));
+
 app.use(logger);
 
 //routes
@@ -35,6 +38,7 @@ app.use('/api/auth',authPath);
 app.use('/api/users',userPath);
 app.use('/api/scan',scanPath);
 app.use('/api/filter',filterScanPath);
+app.use('/api/search',searchPath);
 
 // Routes لصفحات HTML
 // استبدال اسماء الروابط لما الموقع ينزل

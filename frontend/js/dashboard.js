@@ -171,6 +171,8 @@ modalAddBtn.addEventListener('click',()=>{
     document.querySelectorAll('modal-add-user .invalid-feedback').forEach(msg=>{
         msg.innerHTML = '';
     });
+
+    document.querySelector('.modal-add-user .div-stage .stage').classList.remove('is-invalid','is-valid');
     form.reset();
 });
 
@@ -190,19 +192,46 @@ function validateNewStudent(id,message){
 
 
 //--- all data about student in cards ---//
-//!update soon for pagination
-    function getAllStudent(){
+    let currentPage = 1;
+    function getAllStudent(currentPage){
         let num_Student = document.querySelector('.student-infrom p');
+        let tableStudents = document.querySelector('.table-studens-data tbody');
 
-        axios.get(`${BASE_URL}/api/users`,{
+        tableStudents.innerHTML = "";
+        axios.get(`${BASE_URL}/api/users?page=${currentPage}`,{
             headers:{
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
             }
         }).then((response)=>{
-
             let count = response.data.count;
+            let users = response.data.users;
+            let page = response.data.page;
+            let limit = response.data.limit;
+            let totalPages = response.data.totalPages;
             num_Student.innerHTML = count;
+
+
+            let counter = (page - 1) * limit;
+            for(let user of users){
+                tableStudents.innerHTML += `
+
+                    <tr>
+                    <th scope="row">${counter+=1}</th>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.stage}</td>
+                    </tr>
+                
+                `
+            }
+
+
+          
+            // pagination
+            renderPagination(page,totalPages)
+           
+
             
         }).catch((error)=>{
             console.log(error);
@@ -227,7 +256,6 @@ function validateNewStudent(id,message){
             'Authorization': `Bearer ${token}`
             }
         }).then((response)=>{
-                console.log(response);
                 let countPresent = response.data.countPresent;
                 let countAbsence = response.data.countAbsence;
 
@@ -241,8 +269,157 @@ function validateNewStudent(id,message){
     }
 
     presentAndAbsent();
-    getAllStudent();
+    getAllStudent(currentPage);
+
+    let paginationContent = document.querySelector('.pag-nav .pagination');
+
+    paginationContent.addEventListener('click',(e)=>{
+        e.preventDefault();
+
+        if(e.target.classList.contains('page-link')){
+            
+            currentPage = +e.target.dataset.page;
+            if(!currentPage || currentPage<1){
+                return;
+            }else{
+
+            getAllStudent(currentPage);
+                
+            }
+           
+        }
+    });
+
+
+    
+     //! update soon for Split pagination
+    function renderPagination(currentPage,totalPages){
+        let pagination = document.querySelector('#students .pag-nav .pagination');
+        pagination.innerHTML = "";
+
+        pagination.innerHTML += `
+        
+        <li class="page-item ${currentPage === 1 ? "disabled" : "" }">
+
+        <a class="page-link" href="#" ${currentPage === 1 ? "" : `data-page = "${currentPage - 1}" `}>Previous</a>
+        
+        </li>
+        
+        `
+
+        for(let i=1; i<=totalPages; i++){
+
+            pagination.innerHTML += `
+            
+            <li class="page-item ${currentPage === i ? "active" : ""}">
+
+            <a class="page-link" href="#" data-page="${i}">${i}</a>
+
+            </li>
+
+            `
+            }
+
+            pagination.innerHTML += `
+            
+            <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+
+            <a class="page-link" href="#" ${currentPage === totalPages ? "" : `data-page = "${currentPage + 1}"`}>Next</a>
+
+            </li>
+            
+            `
+
+        
+
+
+    }
 //--- all data about student in cards ---//
+
+
+
+
+
+//--- search in students table --- //
+    let searchText = document.querySelector('.sch-div form .sch');
+
+    function searchStudents(search){
+
+        let tableStudents = document.querySelector('.table-studens-data tbody');
+        
+        axios.get(`${BASE_URL}/api/search?search=${search}`,{
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        }).then((response)=>{
+            
+
+            let searchs = response.data.result;
+
+            tableStudents.innerHTML = "";
+            
+            
+                
+                if(searchs.length === 0 ){
+
+                tableStudents.innerHTML +=`
+                    <tr>
+                    <th scope="row"></th>
+                    <td>${response.data.message}</td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                
+                `
+
+                }else{
+
+
+                counter = 0;
+                for(search of searchs){
+
+                tableStudents.innerHTML +=`
+                    <tr>
+                    <th scope="row">${counter+=1}</th>
+                    <td>${search.firstName} ${search.lastName}</td>
+                    <td>${search.email}</td>
+                    <td>${search.stage}</td>
+                    </tr>
+                
+                `
+            }
+                }
+                
+        
+      
+        }).catch((error)=>{
+            console.log(error)
+        });
+    }
+
+
+    let searchBtn =document.querySelector('.sch-div form  .sch-btn');
+    searchBtn.addEventListener('click',(e)=>{
+
+        searchText.style.border = "0.1px #0000003c solid"
+        
+        e.preventDefault();
+        
+        if(!searchText.value){
+            searchText.style.border = "0.1px #f3050598 solid"
+            
+            
+        }else{
+
+            searchStudents(searchText.value);
+
+        }
+
+
+    });
+//--- search in students table --- //
+
 
 
 

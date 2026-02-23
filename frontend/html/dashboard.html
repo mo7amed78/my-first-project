@@ -96,7 +96,7 @@
 <!--// Modal export file// -->
 
   <!-- navbar -->
-<nav class="navbar bg-body-tertiary fixed-top">
+<nav class="main-nav navbar bg-body-tertiary fixed-top">
   <div class="container-fluid d-flex">
     <a class="navbar-brand" href="#">Admin Dashboard</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -242,6 +242,7 @@
 </table>
 
 </div>
+
  <footer class="footer-student bg-light d-flex justify-content-around text-muted py-2  border-top">
   <!-- Button trigger modal add user -->
 <button type="button" class="btn btn-success modal-user-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -262,8 +263,51 @@
 <!--// dashboard section //-->
 
 
+<!-- students section -->
+<section id="students" class="section">
+  
 
-<section id="students" class="section">students</section>
+  <br>
+<div class="container">
+  <nav class="navbar sch-nav" style="background-color: #e3f2fd;" data-bs-theme="light">
+  <div class="sch-div container-fluid d-flex justify-content-around">
+    <a class="navbar-brand d-block">Students</a>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2 sch" type="search" placeholder="Search" aria-label="Search"/>
+      <button class="btn btn-outline-success sch-btn" type="submit">Search</button>
+    </form>
+  </div>
+  </nav>
+
+  <table class="table table-hover table-studens-data">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Stage</th>
+    </tr>
+  </thead>
+  <tbody>
+       
+  </tbody>
+  
+</table>
+
+
+
+<nav class="pag-nav" aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+
+    
+  </ul>
+</nav>
+</div>
+
+</section>
+<!--// students section //-->
+
+
 <section id="attend" class="section">attend</section>
 
 

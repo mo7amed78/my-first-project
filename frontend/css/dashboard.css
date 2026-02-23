@@ -6,7 +6,7 @@ body{
     font-size: 20px;
 }
 
-nav{
+.main-nav{
     box-shadow:0 0 5px rgba(0,0,0,0.3);
    
 }
@@ -41,7 +41,7 @@ nav{
     font-weight:700;
 }
 
-.table {
+#dashboard .container .table {
     box-shadow: 0 0 5px rgba(0,0,0,0.4);
 }
 
@@ -140,3 +140,7 @@ nav{
     border-radius:5px;
     outline:0;
 }
+
+
+/** style section students **/
+
