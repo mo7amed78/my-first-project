@@ -26,7 +26,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
 
     searchFilter.isAdmin = false;
 
-    const result = await User.find(searchFilter).select("-password -_id -__v");
+    const result = await User.find(searchFilter).select("-password -__v");
 
     if(result.length === 0 ){
         return res.status(200).json({result,message:"لا يوجد نتائج للبحث"});

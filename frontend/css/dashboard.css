@@ -144,3 +144,12 @@ body{
 
 /** style section students **/
 
+.settings div{
+    display:inline-block;
+    scale:0.9;
+   
+}
+
+.settings div button i{
+    color:#ffffff;
+}

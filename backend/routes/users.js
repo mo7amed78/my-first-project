@@ -44,7 +44,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
     const skip = (page - 1) * limit;
     
    
-    const users = await User.find({isAdmin:false}).skip(skip).limit(limit).select("-password -isAdmin -__v");
+    const users = await User.find({isAdmin:false}).skip(skip).limit(limit).select("-password -isAdmin -__v").sort({createdAt:-1});
     const total = await User.countDocuments({isAdmin:false});
 
     
@@ -76,7 +76,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
 router.get('/:userId',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
     const userId = req.params.userId;
 
-    const user = await User.findById(userId).select("-password -__v  -isAdmin");
+    const user = await User.findById(userId).select("-__v  -isAdmin");
 
     if(!user){
         return res.status(404).json({message:"هذا المستخدم غير موجود"});
@@ -117,6 +117,13 @@ router.put('/:userId',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
         req.body.password = await bcrypt.hash(req.body.password , salt);
     }
 
+    if(req.body.email){
+        const anotherUser = await User.findOne({email:req.body.email});
+
+        if(anotherUser && !anotherUser._id.equals(userId)){
+            return res.status(400).json({message:"هذا البريد الالكتروني مستخدم بالفعل"});
+        }
+    }
 
     const UpdatedUser = await User.findByIdAndUpdate(userId,{
         $set:{
@@ -126,7 +133,7 @@ router.put('/:userId',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
 
     const {password,isAdmin,__v,...other} = await UpdatedUser._doc;
 
-    res.json({...other});
+    res.json({message:"تم التحديث بنجاح",...other});
     
 }));
 

@@ -75,6 +75,72 @@
 </div>
 <!--// Modal add user// -->    
 
+
+<!-- Modal update user -->
+<div class="modal fade modal-form-update" id="staticBackdropUpdate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropUpd" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropUpd">Update Users</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+
+  <form class="row g-3 modal-update-user">
+  <div class="col-md-6 div-email">
+    <label for="inputEmail" class="form-label">Email</label>
+    <input type="email" class="form-control email" id="inputEmail" autocomplete="username">
+    <div id="email-validate2" class="invalid-feedback">
+     <!-- validate email -->
+    </div>
+  </div>
+  <div class="col-md-6 div-password">
+    <label for="inputPassword" class="form-label">Password</label>
+    <input type="password" class="form-control password" id="inputPassword" autocomplete="new-password">
+      <div id="password-validate2" class="invalid-feedback">
+     <!-- validate password -->
+    </div>
+  </div>
+  <div class="col-12 div-first">
+    <label for="first-name" class="form-label">First Name</label>
+    <input type="text" class="form-control firstname" id="first-name">
+      <div id="firstname-validate2" class="invalid-feedback">
+     <!-- validate firstname -->
+    </div>
+  </div>
+  <div class="col-12 div-last">
+    <label for="last-name" class="form-label">Last Name</label>
+    <input type="text" class="form-control lastname" id="last-name">
+       <div id="lastname-validate2" class="invalid-feedback">
+     <!-- validate lastname -->
+    </div>
+  </div>
+  <div class="col-md-4 div-stage">
+    <label for="stage" class="form-label">Stage</label>
+    <select id="stage" class="form-select stage">
+      <option selected>Choose...</option>
+      <option value="الثالث الاعدادي">الثالث الاعدادي</option>
+      <option value="الاول الثانوي">الاول الثانوي</option>
+      <option value="الثاني الثانوي">الثاني الثانوي</option>
+      <div id="stage-validate2" class="invalid-feedback">
+      <!-- validate stage --> 
+      </div>
+    </select>
+  </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn btn-outline-danger add-user" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-outline-success">Update</button>
+      </div>
+</form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--// Modal update user// -->    
+
+
 <!-- Modal export file -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -286,10 +352,11 @@
       <th scope="col">Name</th>
       <th scope="col">Email</th>
       <th scope="col">Stage</th>
+      <th scope="col">Settings</th>
     </tr>
   </thead>
   <tbody>
-       
+    
   </tbody>
   
 </table>
