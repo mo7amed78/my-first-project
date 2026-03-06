@@ -65,10 +65,16 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     if(filterLectureId){
         filter.lectureId = filterLectureId;
     }
-    const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage").select("-__v");
+    const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage")
+                                              .populate("lectureId","lectureName stage date").select("-__v");
 
     if(filterScan.length === 0){
-        return res.status(404).json({message:"لا يوجد نتائج حالياً"});
+        return res.status(200).json({
+            message:"لا يوجد نتائج حالياً",
+            count:0,
+            filterScan:[]
+            
+        });
     }
 
 
@@ -78,8 +84,6 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     });
    
 }));
-
-
 
 
 

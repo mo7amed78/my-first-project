@@ -196,11 +196,11 @@ function validateNewStudent(id,message){
 
 
 //--- all data about student in cards ---//
-    let U_email = document.querySelector('.modal-update-user .div-email #inputEmail');
-    let U_password = document.querySelector('.modal-update-user .div-password #inputPassword');
-    let U_firstName = document.querySelector('.modal-update-user .div-first #first-name');
-    let U_lastName = document.querySelector('.modal-update-user .div-last #last-name');
-    let U_stage = document.querySelector('.modal-update-user .div-stage #stage');
+    let U_email = document.querySelector('.modal-update-user .div-email #inputEmail2');
+    let U_password = document.querySelector('.modal-update-user .div-password #inputPassword2');
+    let U_firstName = document.querySelector('.modal-update-user .div-first #first-name2');
+    let U_lastName = document.querySelector('.modal-update-user .div-last #last-name2');
+    let U_stage = document.querySelector('.modal-update-user .div-stage #stage2');
     let currentPage = 1;
     function getAllStudent(currentPage){
         let num_Student = document.querySelector('.student-infrom p');
@@ -243,7 +243,7 @@ function validateNewStudent(id,message){
 
                         <div class="delete-user">
                         
-                        <button type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button> 
+                        <button type="button" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-id="${user._id}" data-bs-target="#deleteUser"><i class="fa-solid fa-trash"></i></button> 
                         
                         </div>
                     </td>
@@ -258,7 +258,7 @@ function validateNewStudent(id,message){
 
           
             // pagination
-            renderPagination(page,totalPages)
+            renderPagination(page,totalPages);
            
 
             
@@ -271,7 +271,7 @@ function validateNewStudent(id,message){
         let present_student = document.querySelector('.present-infrom p');
         let absence_student = document.querySelector('.absent-infrom p');
 
-        let filterLectureId =localStorage.getItem('encodedText');
+        let filterLectureId =localStorage.getItem('lectureId');
 
         if(!filterLectureId){
                  present_student.innerHTML = 0;
@@ -432,7 +432,7 @@ async function searchStudents(search){
             for(search of searchs){
 
             rows +=`
-                <tr>
+                <tr id="${user._id}">
                 <th scope="row">${counter+=1}</th>
                 <td>${search.firstName} ${search.lastName}</td>
                 <td>${search.email}</td>
@@ -447,7 +447,7 @@ async function searchStudents(search){
 
                     <div class="delete-user">
                     
-                    <button type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button> 
+                    <button type="button" class="btn btn-danger delete-btn" data-id="${user._id}><i class="fa-solid fa-trash"></i></button> 
                     
                     </div>
                 </td>
@@ -494,8 +494,9 @@ searchBtn.addEventListener('click',(e)=>{
 
 //--- update and delete student--- //
 
+// update
 let settingsContent = document.querySelector('.table-studens-data tbody');
-    settingsContent.addEventListener('click',(e)=>{
+settingsContent.addEventListener('click',(e)=>{
     //reset
     document.querySelectorAll('.modal-update-user input').forEach(input=>{
     input.classList.remove('is-invalid','is-valid');
@@ -619,11 +620,23 @@ let formUpdate = document.querySelector('.modal-update-user');
 
 formUpdate.addEventListener("submit",async (e)=>{
     e.preventDefault();
-    let studentId = localStorage.getItem('studentId')
+    let studentId = localStorage.getItem('studentId');
 try {
     await updateStudents(studentId);
     let page = localStorage.getItem('page') || 1;
+
+    document.getElementById(studentId).classList.add('table-success');
+    
+    setTimeout(()=>{
+    document.getElementById(studentId).classList.remove('table-success');
+
+    },1000)
+
+    setTimeout(()=>{
     getAllStudent(page);
+    },2000)
+    
+
 } catch(err) {
     console.log("حدث خطأ أثناء التحديث", err);
 }    
@@ -639,7 +652,82 @@ modal.show();
 }
 
 
+// delete
+settingsContent.addEventListener("click",(e)=>{
+    let checkDel = e.target.closest(".delete-btn");  
+    if(!checkDel) return;  
+    localStorage.setItem('studentDelId',checkDel.dataset.id);
 
+});
+
+async function deleteStudents(deleteId){
+    let alertSuccess = document.querySelector('.alert');
+    let alertFalied = document.querySelector('.alert-failed');
+    
+    try {
+        const response = await axios.delete(`${BASE_URL}/api/users/${deleteId}`,{
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+        let msg = response.data.message;
+        alertSuccess.innerHTML = msg;
+        alertSuccess.classList.remove('d-none');
+        setTimeout(()=>{alertSuccess.classList.add('d-none');
+
+        },3000);
+
+    } catch (error) {
+
+        let err_msg = error.response.data.message || "Something went wrong";
+        alertFalied.innerHTML = err_msg;
+        alertFalied.classList.remove('d-none');
+        setTimeout(()=>{alertFalied.classList.add('d-none');
+        },3000);
+        
+    }
+}
+
+
+let deleteBtn = document.querySelector('.modal-form-delete .modal-delete-btn');
+let modalDeleteUser = document.getElementById('deleteUser');
+ let isDeleted = false;
+
+deleteBtn.addEventListener('click',async ()=>{
+       
+    let deletedId = localStorage.getItem('studentDelId');
+
+    if(!deletedId) return;
+
+    if(isDeleted) return;
+    isDeleted = true;
+
+
+    await deleteStudents(deletedId);
+
+    const modalDeleted = bootstrap.Modal.getOrCreateInstance(modalDeleteUser);
+    modalDeleted.hide();
+    
+    isDeleted = false;
+     let page = localStorage.getItem('page') || 1;
+
+       document.getElementById(deletedId).style =`
+       animation-name:deleted;
+       animation-duration: 1s;
+       
+       `
+        setTimeout(()=>{
+            getAllStudent(page);
+        },1500)
+     
+
+     localStorage.removeItem('studentDelId');
+   
+   
+});
 
 //--- update and delete student--- //
 

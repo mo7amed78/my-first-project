@@ -8,6 +8,7 @@ const userPath = require('./routes/users');
 const scanPath = require('./routes/scan');
 const filterScanPath = require('./routes/filterScan');
 const searchPath = require('./routes/search');
+const lecturePath = require('./routes/lecture');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
@@ -39,6 +40,7 @@ app.use('/api/users',userPath);
 app.use('/api/scan',scanPath);
 app.use('/api/filter',filterScanPath);
 app.use('/api/search',searchPath);
+app.use('/api/lecture',lecturePath);
 
 // Routes لصفحات HTML
 // استبدال اسماء الروابط لما الموقع ينزل

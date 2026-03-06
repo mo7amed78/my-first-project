@@ -42,7 +42,7 @@ body{
 }
 
 #dashboard .container .table {
-    box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    box-shadow: 0 0 2px rgba(0,0,0,0.4);
 }
 
 
@@ -106,6 +106,11 @@ body{
 }
 
 .qr-content{
+    position:relative;
+}
+
+.qr-content .qr-div{
+    min-width:500px;
     height:650px;
     display:flex;
     flex-direction:column;
@@ -114,7 +119,7 @@ body{
     gap:10px;
 }
 
-.qr-content p{
+.qr-content .qr-div p{
     display:block;
     height:100px;
     display:flex;
@@ -127,18 +132,46 @@ body{
     box-shadow:5px 5px 5px rgba(0,0,0,0.1);
 }
 
-.qr-content button{
+.qr-content .qr-div button{
     width:300px;
     padding:8px;
     font-weight:600;
 }
 
-.qr-content input {
+.qr-content .qr-div input {
     width: 300px;
     padding: 7px;
     border:1px solid #00000074;
+    color:#20B2AA;
     border-radius:5px;
     outline:0;
+}
+
+.qr-content .number-div{
+    margin-top:10px;
+    width: 110px;
+    height:35px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    color: #ffffff;
+    font-weight: 700;
+    position:absolute;
+    top:0;
+    right:100px;
+
+}
+
+.toast-container .no-lec-toast{
+    width:35px;
+    height:50px;
+    overflow:hidden;
+    transition:0.7s ease;
+}
+
+.toast-container .no-lec-toast.active{
+    width: 350px;
+    height: 90px;
 }
 
 
@@ -152,4 +185,15 @@ body{
 
 .settings div button i{
     color:#ffffff;
+}
+
+@keyframes deleted{
+    0%{
+        opacity:0.5;
+        transform:translateX(-100px);
+    }
+    100%{
+        opacity: 0.1;
+        transform: translateX(-900px);
+    }
 }

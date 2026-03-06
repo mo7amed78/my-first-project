@@ -92,7 +92,6 @@ const token = localStorage.getItem('token');
 
     let bodyParams ={
         userId:decode.id,
-        qrCode:textQRCOde,
         lectureId:textQRCOde,
     };
 
@@ -140,7 +139,7 @@ axios.post(`${Base_URL}/api/scan`,bodyParams,{
         
         toast(scannedAt,name,attended);
     }else if(attended === 200){
-        errMesg = response.data.Message;
+        errMesg = response.data.message;
         toast('','',attended,errMesg);
     }
 }).catch((error)=>{

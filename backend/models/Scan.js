@@ -8,18 +8,10 @@ const ScanSchema = new mongoose.Schema({
         required:true
     }, 
 
-    qrCode:{
-        type:String,
-        minlength:5,
-        trim:true,
-        required:true,
-    },
-
     lectureId:{
-        type:String,
-        minlength:5,
-        required:true,
-        trim:true
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"lecture",
+        required:true
     },
 
     stage:{
@@ -43,8 +35,7 @@ const Scan = mongoose.model('scan',ScanSchema);
 function validateUserScanned(obj){
     const schema = joi.object({
         userId:joi.string().length(24).hex().required(),
-        qrCode:joi.string().min(5).trim().required(),
-        lectureId:joi.string().min(5).trim().required()
+        lectureId:joi.string().length(24).hex().required()
         
     });
 

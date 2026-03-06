@@ -13,8 +13,30 @@ let textQRCode = document.querySelector('.input-qr');
 let generateBtn = document.querySelector('.generate-btn');
 let qrCode = document.querySelector('.qrcode-img');
 
+let savedId = localStorage.getItem('lectureId');
+let savedSelected = localStorage.getItem('selectedValue');
+let savedLecture = localStorage.getItem('lectureName');
 
-function showQRCode(){
+if(savedId){
+    textQRCode.value = savedId;
+}else{
+    qrCode.setAttribute('src','');
+    textQRCode.value = "";
+
+}
+
+if(savedSelected){
+document.getElementById('stage-dashboard').value = savedSelected;
+ filterAbsence();
+}
+
+if(savedLecture){
+    document.getElementById('lecture-name').innerHTML = `Attendance Records(${savedLecture})`;
+}
+
+function showQRCode(lectureId){
+
+    textQRCode.value=lectureId
 
     textQRCode.style.border = `1px solid #00000074`;
 
@@ -24,18 +46,31 @@ function showQRCode(){
         return;
     }
 
-let encodedText = encodeURIComponent(textQRCode.value.trim());
 
-localStorage.setItem('encodedText',encodedText);
-
-let url = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedText}`;
+let url = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${lectureId}`;
 
 qrCode.setAttribute('src',url);
 
 };
 
+
+const animToast = document.querySelector('.toast-container .no-lec-toast');
+const toastNoLec = bootstrap.Toast.getOrCreateInstance( document.getElementById('liveNoLec'));
 generateBtn.addEventListener('click',()=>{
-    showQRCode()
+    let idForBtn = localStorage.getItem('lectureId');
+    if(!idForBtn){
+        //reset
+        animToast.classList.remove('active')
+       
+        toastNoLec.show();
+
+        setTimeout(()=>{animToast.classList.add('active');},500)
+        
+       
+
+        return;
+    }
+    showQRCode(idForBtn);
 });
 
 
@@ -46,43 +81,80 @@ generateBtn.addEventListener('click',()=>{
 let stageChoose = document.querySelector('.stage-choose');
     
 
-function filterAbsence(){
+async function filterAbsence(){
     let table = document.querySelector('#dashboard .table tbody');
     let number = document.querySelector('.stage-div .count');
-    let lectureName = document.querySelector('.stage-div .lecture-name');
 
+    let show_num_QR_page = document.querySelector('#qr .number-div');
+    //loading
+    table.innerHTML =`
+            <tr>
+            <th scope="row"></th>
+
+            <td>Loading...</td>
+            <td></td>
+            <td></td>
+            </tr>
     
-    let filterLectureId = localStorage.getItem('encodedText');
+    `; 
+    
+    let filterLectureId = localStorage.getItem('lectureId');
     let filterStage =  localStorage.getItem('selectedValue');
 
-    if(filterLectureId){
-    lectureName.innerHTML = `
-        Attendance Records (${filterLectureId})
-    `
-    }else{
-        lectureName.innerHTML = `
-        Attendance Records 
-    `
+    if(!filterLectureId){
+       table.innerHTML =`
+            <tr>
+            <th scope="row"></th>
+
+            <td>لا يوجد بيانات حالياً</td>
+            <td></td>
+            <td></td>
+            </tr>
+    
+    `;  
+       return;
+    }
+
+    if(!filterStage){
         return;
     }
 
-
-
-     
-    axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filterLectureId=${filterLectureId}`,{
+    try {
+    const response = await axios.get(`${BASE_URL}/api/filter/stageLecture?filterStage=${filterStage}&filterLectureId=${filterLectureId}`,{
     headers:{
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
     }
-    }).then((response)=>{
-
+    });
     // remove table first 
     table.innerHTML = "";
+   
+
 
     let students = response.data.filterScan;
     let numOfStudent = response.data.count;
+     let rows = "";
 
     number.innerHTML = `number : ${numOfStudent}`;
+    show_num_QR_page.innerHTML = `number : ${numOfStudent}`;
+           
+        if(students.length === 0 ){
+      
+        let  notFoundMsg = response.data.message;
+        
+            table.innerHTML = `
+            <tr>
+            <th scope="row"></th>
+
+            <td>${notFoundMsg}</td>
+            <td></td>
+            <td></td>
+            </tr>
+            
+            `;
+
+            return;
+        }
 
      let counter = 0;
 
@@ -122,8 +194,7 @@ function filterAbsence(){
 
         let scannedAt = `${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
 
-
-        table.innerHTML += `
+        rows +=`
                 <tr>
                 <th scope="row">${counter+=1}</th>
                 <td>${firstName} ${lastName}</td>
@@ -131,26 +202,21 @@ function filterAbsence(){
                 <td>${stage}</td>
                 </tr>
         `
+        
     }
-}).catch((error)=>{
 
-   let  notFoundMsg = error.response?.data?.message || "لا يوجد بيانات حالياً"
+            table.innerHTML =  rows;
 
-    
-    
-    table.innerHTML = `
-    <tr>
-    <th scope="row"></th>
 
-    <td>${notFoundMsg}</td>
-    <td></td>
-    <td></td>
-    </tr>
-    
-    `;
-});
+    } catch (error) {
+        console.log(error);
+ 
+    }
 
 }
+
+
+
 
 stageChoose.addEventListener('change',(e)=>{
     let selectedValue = e.target.value;
@@ -159,25 +225,99 @@ stageChoose.addEventListener('change',(e)=>{
 
 });
 
-
-
-// if page Refresh
-document.addEventListener('DOMContentLoaded',()=>{
-    let saveChanges =  localStorage.getItem('selectedValue');
-    let saveText  = localStorage.getItem('encodedText');
-    let saveURL = localStorage.getItem('url');
-
-    if(saveChanges){
-        stageChoose.value = saveChanges;
-        filterAbsence();
-    }
-
-    if(saveText){
-        textQRCode.value = saveText;
-    }
-});
-
-
 //--- put data in table --//
 
 
+
+//---generate new lecture---//
+async function newLecture(){
+
+let lectureName = document.querySelector('.body-lecture div .lecture-name');
+let lectureStage = document.querySelector('.body-lecture div .stage-lecture')
+let lectureTitle = document.querySelector('.stage-div .lecture-name');
+
+let err_stage = document.getElementById('lecStage');
+let err_lecName = document.getElementById('lecName');
+
+        //reset
+        lectureName.classList.remove('is-invalid');
+        err_lecName.innerHTML = "";
+        err_stage.classList.remove('is-invalid');
+
+
+    let bodyParams = {
+        lectureName:lectureName.value,
+        stage:lectureStage.value
+    };
+
+    try {
+        const response = await axios.post(`${BASE_URL}/api/lecture`,bodyParams,{
+            headers:{
+                "Content-Type":'application/json',
+                "Authorization":`Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+        let NewlectureName = response.data.result.lectureName;
+        let lectureId = response.data.result._id;
+
+        //!soon
+        let stage_QR_page = response.data.result.stage;
+
+        localStorage.setItem('lectureName',NewlectureName);
+        lectureTitle.innerHTML =`Attendance Records(${NewlectureName})`;
+
+        localStorage.setItem("lectureId",lectureId);
+
+        showQRCode(lectureId);   
+
+        const addNewLectureModal = bootstrap.Modal.getOrCreateInstance("#exampleModalStart");
+        addNewLectureModal.hide();
+
+        // open qr
+        let idsection = ["dashboard","students","attend","reports"];
+        let idTargetBtn = document.querySelectorAll('[data-target]');
+
+        idTargetBtn.forEach(idTarget=>{
+            idTarget.classList.remove('active');
+        });
+
+        idsection.forEach(id=>{
+            document.getElementById(id).classList.remove('active');
+        });
+        
+        document.getElementById('qr').classList.add('active');
+        document.querySelector('[data-target="qr"]').classList.add('active');
+        //after 1sec
+        setTimeout(()=>{
+            generateBtn.click();
+        },1000);
+
+
+
+    } catch (error) {
+
+        let msg = error.response.data.message.toLowerCase() || "Something went wrong";
+
+        if(msg.includes('lecturename') || msg.includes("المحاضرة")){
+            lectureName.classList.add('is-invalid');
+            err_lecName.innerHTML = msg;
+        }else{
+            err_stage.classList.add('is-invalid');
+        }
+
+
+
+
+    }
+}
+
+
+
+let formNewLecture = document.querySelector('.form-new-lecture');
+formNewLecture.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await newLecture();
+});
+//---generate new lecture---//
