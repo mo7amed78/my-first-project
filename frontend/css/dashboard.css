@@ -147,19 +147,30 @@ body{
     outline:0;
 }
 
-.qr-content .number-div{
-    margin-top:10px;
-    width: 110px;
-    height:35px;
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-    color: #ffffff;
-    font-weight: 700;
+/* .qr-content .infom-div{
+    background-color:orange;
+    width:300px;
+    height:400px;
+} */
+
+.qr-content .info-div{
+    width:150px;
+    height:90px;
+    display:flex;
+    justify-content:space-around;
+    flex-direction:column;
     position:absolute;
     top:0;
     right:100px;
 
+}
+
+.qr-content .info-div div{
+    text-align:center;
+    padding:5px;
+    border-radius:5px;
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .toast-container .no-lec-toast{

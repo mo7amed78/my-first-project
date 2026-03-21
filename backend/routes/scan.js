@@ -75,7 +75,4 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
 
 
 
-
-
-
 module.exports = router;

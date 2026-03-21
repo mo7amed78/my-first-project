@@ -310,7 +310,7 @@
 
         <div class="col scan-infrom">
         <h5 class="card-title">Scan Sessions</h5>
-        <p class="card-text">5</p>
+        <p class="card-text">0</p>
         </div>
 
       </div>
@@ -414,50 +414,23 @@
     <h4>Attendance</h4>
     <hr>
 
-  <div class="card-container" style="max-height: 400px; overflow-y: auto;">
+  <div class="card-container" style="max-height: 240px; overflow-y: auto;">
 
-      <div class="row row-cols-1 row-cols-md-4 mb-3 g-3">
-
-        <div class="col">
-      <div class="card text-center">
-      <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-    </div>
-
-
-        <div class="col">
-        <div class="card text-center">
-          <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
+  <div id="attendance-info" class="attendance-info row row-cols-1 row-cols-md-4 mb-3 g-3">
 
       <div class="col">
-    <div class="card text-center">
+      <div class="card text">
       <div class="card-body">
-        <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+      <h5 class="card-title d-flex  align-items-center text-body-secondary"><i class="fa-regular fa-calendar" style="font-size:35px;"></i> <span style="font-size:18px;">April 25,2024</span></h5>
+      <hr>
+      <p class="card-text">
+        <h5>Math 101</h5>
+        <h6 class="text-body-secondary">Math 101</h6>
+      </p>
+      <button class="btn btn-success text-light fw-bold mw-100" style="width:200%">Show Data</button>
       </div>
     </div>
-  </div>
-
-    <div class="col">
-    <div class="card text-center">
-      <div class="card-body">
-        <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
     </div>
-  </div>
 
   </div> 
     
@@ -474,7 +447,7 @@
 <!-- qr section -->
 <section id="qr" class="section">
   
-      <div class="qr-content">
+    <div class="qr-content">
 
     <div class="qr-div">
     <div style="min-height: 120px;">
@@ -492,9 +465,20 @@
     </p>
     </div>
 
-    <div class="number-div bg-info bg-gradient">
-      number : 0
+    <div class="info-div">
+
+      <div class="number-div  bg-info bg-gradient">
+        number : 0
+      </div>
+
+      <div class="stage-name-div  bg-black d-none">
+        لا يوجد نتائج
+      </div>
+
+
     </div>
+
+
     
     
 

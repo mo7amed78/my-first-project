@@ -15,9 +15,10 @@
 let sectionBtn = document.querySelectorAll('.offcanvas-body ul li .nav-link');
 let openSection = document.querySelectorAll('.section');
 let closeNav = document.querySelector('.offcanvas-header .btn-close');
-let navContent = document.querySelector('.offcanvas-body .navbar-nav')
+let navContent = document.querySelector('.offcanvas-body .navbar-nav');
 
 let activeSection = localStorage.getItem('id');
+let name_of_lecture = localStorage.getItem('lectureName');
 
 if(activeSection){
 document.getElementById(activeSection).classList.add('active');
@@ -25,6 +26,10 @@ document.querySelector(`[data-target="${activeSection}"]`).classList.add('active
 }else{
 document.getElementById("dashboard").classList.add('active');
 document.querySelector(`[data-target="dashboard"]`).classList.add('active');
+}
+
+if(name_of_lecture){
+    scanSessions(name_of_lecture);
 }
 
 navContent.addEventListener('click',(e)=>{
@@ -52,7 +57,6 @@ navContent.addEventListener('click',(e)=>{
 
 //--- remove footer--- //
 const footer = document.querySelector('.footer-student');
-const mainContent = document.querySelector('#dashboard');
 window.addEventListener('scroll', () => {
     const scrollBottom = window.scrollY + window.innerHeight;
     const docHeight = document.documentElement.scrollHeight;
@@ -297,6 +301,27 @@ function validateNewStudent(id,message){
         });
     }
 
+    async function scanSessions(nameLecture){
+        let num_of_session = document.querySelector('.scan-infrom p');
+        try {
+
+            const response = await axios.get(`${BASE_URL}/api/lecture?lecName=${nameLecture}`,{
+            headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            }
+        })
+
+        let data = response.data;
+        num_of_session.innerHTML = data.countSession; 
+
+        } catch (error) {
+            console.log(error);
+        }
+
+
+    }
+
     presentAndAbsent();
     getAllStudent(currentPage);
 
@@ -366,7 +391,7 @@ function renderPagination(currentPage,totalPages){
 
 
 
-//--- get student by id put data in update modal ---//
+//--- get student by id and put data in update modal ---//
 async function getStudentsId(id){
     try {
     const response = await axios.get(`${BASE_URL}/api/users/${id}`,{
@@ -384,7 +409,7 @@ async function getStudentsId(id){
         console.log("error",error);
     }
 }
-//--- get student by id put data in update modal ---//
+//--- get student by id and put data in update modal ---//
 
 
 

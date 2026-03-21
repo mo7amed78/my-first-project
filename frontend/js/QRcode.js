@@ -9,13 +9,19 @@
     ?'http://192.168.1.7:3000'
     :window.location.origin;
 
+
+
 let textQRCode = document.querySelector('.input-qr');
 let generateBtn = document.querySelector('.generate-btn');
 let qrCode = document.querySelector('.qrcode-img');
+let stageNameQrPage = document.querySelector('#qr .info-div .stage-name-div ');
+
 
 let savedId = localStorage.getItem('lectureId');
 let savedSelected = localStorage.getItem('selectedValue');
 let savedLecture = localStorage.getItem('lectureName');
+let savedStageInQR = localStorage.getItem('stage_QR_page');
+
 
 if(savedId){
     textQRCode.value = savedId;
@@ -32,6 +38,11 @@ document.getElementById('stage-dashboard').value = savedSelected;
 
 if(savedLecture){
     document.getElementById('lecture-name').innerHTML = `Attendance Records(${savedLecture})`;
+}
+
+if(savedStageInQR){
+    stageNameQrPage.classList.remove('d-none');
+    stageNameQrPage.innerHTML = savedStageInQR;
 }
 
 function showQRCode(lectureId){
@@ -85,7 +96,7 @@ async function filterAbsence(){
     let table = document.querySelector('#dashboard .table tbody');
     let number = document.querySelector('.stage-div .count');
 
-    let show_num_QR_page = document.querySelector('#qr .number-div');
+    let show_num_QR_page = document.querySelector('#qr .info-div .number-div');
     //loading
     table.innerHTML =`
             <tr>
@@ -236,6 +247,7 @@ let lectureName = document.querySelector('.body-lecture div .lecture-name');
 let lectureStage = document.querySelector('.body-lecture div .stage-lecture')
 let lectureTitle = document.querySelector('.stage-div .lecture-name');
 
+
 let err_stage = document.getElementById('lecStage');
 let err_lecName = document.getElementById('lecName');
 
@@ -262,11 +274,15 @@ let err_lecName = document.getElementById('lecName');
         let NewlectureName = response.data.result.lectureName;
         let lectureId = response.data.result._id;
 
-        //!soon
         let stage_QR_page = response.data.result.stage;
 
+
+        localStorage.setItem('stage_QR_page',stage_QR_page);
         localStorage.setItem('lectureName',NewlectureName);
+
         lectureTitle.innerHTML =`Attendance Records(${NewlectureName})`;
+        stageNameQrPage.classList.remove('d-none');
+        stageNameQrPage.innerHTML = stage_QR_page;
 
         localStorage.setItem("lectureId",lectureId);
 
@@ -313,11 +329,89 @@ let err_lecName = document.getElementById('lecName');
     }
 }
 
-
-
 let formNewLecture = document.querySelector('.form-new-lecture');
 formNewLecture.addEventListener('submit', async (e)=>{
     e.preventDefault();
     await newLecture();
 });
 //---generate new lecture---//
+
+
+//---get all lectures and export as excel---//
+async function getAllAttendance(){
+    let attendanceInfo = document.getElementById('attendance-info');
+    try {
+      const response = await axios.get(`${BASE_URL}/api/lecture`,{
+        headers:{
+            "Content-Type":'application/json',
+            "Authorization":`Bearer ${token}`
+        }
+      });
+
+        let Lectures = response.data.get_lecs;
+        let rows = "";
+    
+        for(let lecture of Lectures){
+            rows+=`
+                <div class="col">
+                <div class="card text">
+                <div class="card-body">
+
+                <h5 class="card-title d-flex  align-items-center text-body-secondary">
+                <i class="fa-regular fa-calendar" style="font-size:35px;"></i> 
+                <span style="font-size:18px;">${lecture.createdAt.split('T')[0]}</span>
+                </h5>
+
+                <hr>
+                <p class="card-text">
+                    <h5>${lecture.lectureName}</h5>
+                    <h6 class="text-body-secondary">${lecture.stage}</h6>
+                </p>
+                <button data-lecture="${lecture._id}" class=" show-btn btn btn-success text-light fw-bold mw-100" style="width:200%">Show Data</button>
+                </div>
+                </div>
+                </div>
+            
+            `
+        }
+
+        attendanceInfo.innerHTML = rows;
+      
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+async function getAttendanceById(lectureId){
+    try {
+        const response = await axios.get(`${BASE_URL}/api/filter/stageLecture?filterLectureId=${lectureId}`,{
+            headers:{
+                "Content-Type":'application/json',
+                "Authorization":`Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+let attendContainer = document.getElementById('attendance-info');
+
+attendContainer.addEventListener('click',(e)=>{
+
+    let showBtn = e.target.closest(".show-btn");
+
+    if(showBtn){
+        console.log(showBtn.dataset.lecture);
+        getAttendanceById(showBtn.dataset.lecture);
+    }
+});
+
+getAllAttendance();
+
+//---get all lectures and export as excel---//

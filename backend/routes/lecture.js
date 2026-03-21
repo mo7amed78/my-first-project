@@ -39,12 +39,12 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
 
 
 /**
- * @desc get lecture //! upgrade soon
+ * @desc get lectureName And number of session 
  * @route /api/lecture
  * @method GET
  * @access private (admin only)
  */
-router.get('/',asyncHandler(async (req,res)=>{
+router.get('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     const {lecName} = req.query;
 
     const find_lec_name = {};
@@ -53,9 +53,9 @@ router.get('/',asyncHandler(async (req,res)=>{
         find_lec_name.lectureName =  lecName;
     }
 
-    const get_num_scan = await Lecture.find(find_lec_name);
-    console.log(get_num_scan)
-    if(!get_num_scan){
+    const get_lecs = await Lecture.find(find_lec_name);
+    
+    if(!get_lecs){
         return res.status(200).json({
             message:"لا يوجد محاضرات حالياً",
             count:0,
@@ -63,12 +63,10 @@ router.get('/',asyncHandler(async (req,res)=>{
         });
     }
 
-
-    // const GetLecture = await Scan.distinct('lectureId') ;
-    // if(GetLecture.length === 0 ){
-    //     res.status(200).json({message:"لم يتم اضافه محاضرات جديده"});
-    // }
-    res.json({get_num_scan});
+    res.json({
+        countSession:get_lecs.length,
+        get_lecs
+    });
 }));
 
 
