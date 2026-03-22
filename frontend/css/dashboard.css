@@ -147,12 +147,6 @@ body{
     outline:0;
 }
 
-/* .qr-content .infom-div{
-    background-color:orange;
-    width:300px;
-    height:400px;
-} */
-
 .qr-content .info-div{
     width:150px;
     height:90px;
@@ -207,4 +201,21 @@ body{
         opacity: 0.1;
         transform: translateX(-900px);
     }
+}
+
+
+/** style section attend **/
+
+#attend {
+    min-height: 100%;
+}
+
+#attend .container #collapseAttend .card-body .attend-head{
+    position:sticky;
+    top:0;
+    padding:10px;
+    border-radius:5px;
+    background-color: #fff;
+    box-shadow:0px 0px 20px rgba(0,0,0,0.1);
+    
 }

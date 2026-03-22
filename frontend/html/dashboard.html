@@ -414,7 +414,7 @@
     <h4>Attendance</h4>
     <hr>
 
-  <div class="card-container" style="max-height: 240px; overflow-y: auto;">
+  <div class="card-container" style="max-height: 225px; overflow-y: auto;">
 
   <div id="attendance-info" class="attendance-info row row-cols-1 row-cols-md-4 mb-3 g-3">
 
@@ -427,7 +427,7 @@
         <h5>Math 101</h5>
         <h6 class="text-body-secondary">Math 101</h6>
       </p>
-      <button class="btn btn-success text-light fw-bold mw-100" style="width:200%">Show Data</button>
+      <button class="btn btn-success text-light fw-bold mw-100" type="button" aria-expanded="false" aria-controls="collapseExample" style="width:200%">Show Data</button>
       </div>
     </div>
     </div>
@@ -435,9 +435,43 @@
   </div> 
     
 
+  </div>
+
+    <hr>
+
+  <div class="collapse" id="collapseAttend">
+  <div class="card card-body" style="max-height: 400px; overflow-y: auto;">
+    
+    <div class="attend-head d-flex justify-content-between align-items-center">
+
+      <div class="attend-info">
+      <h5>History 202 - Class B</h5>
+      <span>April 25,2024</span>
+      </div>
+
+      <div class="excel-div d-flex align-self-end">
+        <button type="button" class="excel-btn btn btn-success"><i class="fa-solid fa-file-excel"></i> Export to Excel</button>
+      </div>
     </div>
 
     <hr>
+
+      <table class="table table-bordered border border-2 border-secondary-subtle">
+        <thead class="table-active">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Student Name</th>
+            <th scope="col">Time</th>
+            <th scope="col">Email</th>
+          </tr>
+        </thead>
+        <tbody id="table-attend-excel">
+
+        </tbody>
+      </table>
+
+  </div>
+  </div>
 
   </div>
 

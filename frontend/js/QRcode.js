@@ -367,7 +367,7 @@ async function getAllAttendance(){
                     <h5>${lecture.lectureName}</h5>
                     <h6 class="text-body-secondary">${lecture.stage}</h6>
                 </p>
-                <button data-lecture="${lecture._id}" class=" show-btn btn btn-success text-light fw-bold mw-100" style="width:200%">Show Data</button>
+                <button data-lecture="${lecture._id}" class=" show-btn btn btn-success text-light fw-bold mw-100" type="button"  aria-expanded="false" aria-controls="collapseExample" style="width:200%">Show Data</button>
                 </div>
                 </div>
                 </div>
@@ -385,6 +385,13 @@ async function getAllAttendance(){
 
 
 async function getAttendanceById(lectureId){
+    let tableData = document.getElementById("table-attend-excel");
+    let attendHeadInfo = document.querySelector("#attend .attend-head .attend-info");
+    let excelBtn = document.querySelector('#attend .attend-head .excel-div .excel-btn');
+
+    tableData.innerHTML = "";
+
+
     try {
         const response = await axios.get(`${BASE_URL}/api/filter/stageLecture?filterLectureId=${lectureId}`,{
             headers:{
@@ -393,7 +400,93 @@ async function getAttendanceById(lectureId){
             }
         });
 
-        console.log(response);
+        let records = response.data.filterScan;
+        let rows = "";
+
+        if(records.length === 0){
+            let msg = response.data.message;
+            excelBtn.disabled = true;
+            
+            tableData.innerHTML = `
+            <tr>
+            <th scope="row">${msg}</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            </tr>
+
+
+            `
+            return;
+        }
+       
+        let dataLec = records[0].lectureId;
+        let lecAttendName = dataLec.lectureName;
+        let stageAttend = dataLec.stage;
+        let dateAttend = dataLec.date.split("T")[0];
+        excelBtn.disabled = false;
+
+
+        attendHeadInfo.innerHTML = `
+            <h5>${lecAttendName} - ${stageAttend}</h5>
+            <span>${dateAttend}</span>
+
+        `
+        let counter = 0;
+        for(let record of records){
+            
+            let first_name_attend = record.userId.firstName;
+            let last_name_attend = record.userId.lastName;
+            let email_attend = record.userId.email;
+            let timeHoursEdit = +record.scannedAt.slice(11,13);
+            let timeMinutesEdit = record.scannedAt.slice(14,16);
+            let flag;
+        
+        timeHoursEdit+=2;
+
+        if(timeHoursEdit >= 24){
+            timeHoursEdit -= 24;
+                }
+
+        if(timeHoursEdit <= 11){
+                flag = "AM";
+                if(timeHoursEdit === 0){
+                    timeHoursEdit = 12; 
+                    
+                }
+
+                  
+            
+        }else{
+            flag = "PM";
+            if(timeHoursEdit !== 12){
+                timeHoursEdit = timeHoursEdit -12;
+                
+            }
+            
+         
+        };
+
+        let scannedAt = `${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
+
+
+            rows+=`
+
+            <tr>
+            <th scope="row">${counter+=1}</th>
+            <td>${first_name_attend} ${last_name_attend}</td>
+            <td>${scannedAt}</td>
+            <td>${email_attend}</td>
+            </tr>
+
+            
+            `
+
+        }
+        
+        tableData.innerHTML = rows;
+
+        
     } catch (error) {
         console.log(error);
     }
@@ -401,13 +494,15 @@ async function getAttendanceById(lectureId){
 
 
 let attendContainer = document.getElementById('attendance-info');
+const collapseAttend = document.getElementById('collapseAttend');
+const collapseAttendInstance = bootstrap.Collapse.getOrCreateInstance(collapseAttend,{toggle:false});
 
 attendContainer.addEventListener('click',(e)=>{
 
     let showBtn = e.target.closest(".show-btn");
 
     if(showBtn){
-        console.log(showBtn.dataset.lecture);
+        collapseAttendInstance.show();
         getAttendanceById(showBtn.dataset.lecture);
     }
 });
