@@ -116,7 +116,6 @@ async function filterAbsence(){
        table.innerHTML =`
             <tr>
             <th scope="row"></th>
-
             <td>لا يوجد بيانات حالياً</td>
             <td></td>
             <td></td>
@@ -174,36 +173,9 @@ async function filterAbsence(){
         let firstName = student.userId.firstName;
         let lastName = student.userId.lastName;
         let stage = student.userId.stage;
-        let timeHoursEdit = +student.scannedAt.slice(11,13);
-        let timeMinutesEdit = student.scannedAt.slice(14,16);
-        let flag;
+        let timeEdit = student.timeEdit.split(',')[1];
 
-        timeHoursEdit+=2;
-
-        if(timeHoursEdit >= 24){
-            timeHoursEdit -= 24;
-                }
-
-        if(timeHoursEdit <= 11){
-                flag = "AM";
-                if(timeHoursEdit === 0){
-                    timeHoursEdit = 12; 
-                    
-                }
-
-                  
-            
-        }else{
-            flag = "PM";
-            if(timeHoursEdit !== 12){
-                timeHoursEdit = timeHoursEdit -12;
-                
-            }
-            
-         
-        };
-
-        let scannedAt = `${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
+        let scannedAt = `${timeEdit}`;
 
         rows +=`
                 <tr>
@@ -244,7 +216,7 @@ stageChoose.addEventListener('change',(e)=>{
 async function newLecture(){
 
 let lectureName = document.querySelector('.body-lecture div .lecture-name');
-let lectureStage = document.querySelector('.body-lecture div .stage-lecture')
+let lectureStage = document.querySelector('.body-lecture div .stage-lecture');
 let lectureTitle = document.querySelector('.stage-div .lecture-name');
 
 
@@ -270,15 +242,24 @@ let err_lecName = document.getElementById('lecName');
             }
         });
 
-        console.log(response);
         let NewlectureName = response.data.result.lectureName;
         let lectureId = response.data.result._id;
 
+        let today = new Date(response.data.result.createdAt);
+
+        let date = today.toLocaleDateString("en-CA", {
+            timeZone: "Africa/Cairo"
+        });
+
         let stage_QR_page = response.data.result.stage;
+
+        //change the value of stage in localStorage
+        localStorage.setItem("selectedValue",stage_QR_page);
 
 
         localStorage.setItem('stage_QR_page',stage_QR_page);
         localStorage.setItem('lectureName',NewlectureName);
+        localStorage.setItem("dateLecture",date);
 
         lectureTitle.innerHTML =`Attendance Records(${NewlectureName})`;
         stageNameQrPage.classList.remove('d-none');
@@ -292,7 +273,7 @@ let err_lecName = document.getElementById('lecName');
         addNewLectureModal.hide();
 
         // open qr
-        let idsection = ["dashboard","students","attend","reports"];
+        let idsection = ["dashboard","students","attend"];
         let idTargetBtn = document.querySelectorAll('[data-target]');
 
         idTargetBtn.forEach(idTarget=>{
@@ -314,7 +295,7 @@ let err_lecName = document.getElementById('lecName');
 
     } catch (error) {
 
-        let msg = error.response.data.message.toLowerCase() || "Something went wrong";
+        let msg = error.response?.data?.message?.toLowerCase() || "Something went wrong";
 
         if(msg.includes('lecturename') || msg.includes("المحاضرة")){
             lectureName.classList.add('is-invalid');
@@ -333,6 +314,11 @@ let formNewLecture = document.querySelector('.form-new-lecture');
 formNewLecture.addEventListener('submit', async (e)=>{
     e.preventDefault();
     await newLecture();
+});
+
+const modalAddNewLectureEl = document.getElementById('exampleModalStart');
+modalAddNewLectureEl.addEventListener('hide.bs.modal',()=>{
+    document.activeElement.blur();
 });
 //---generate new lecture---//
 
@@ -359,7 +345,7 @@ async function getAllAttendance(){
 
                 <h5 class="card-title d-flex  align-items-center text-body-secondary">
                 <i class="fa-regular fa-calendar" style="font-size:35px;"></i> 
-                <span style="font-size:18px;">${lecture.createdAt.split('T')[0]}</span>
+                <span style="font-size:18px;">${lecture.timeEdit.split(', ')[0].replaceAll("/","-")}</span>
                 </h5>
 
                 <hr>
@@ -438,36 +424,10 @@ async function getAttendanceById(lectureId){
             let first_name_attend = record.userId.firstName;
             let last_name_attend = record.userId.lastName;
             let email_attend = record.userId.email;
-            let timeHoursEdit = +record.scannedAt.slice(11,13);
-            let timeMinutesEdit = record.scannedAt.slice(14,16);
-            let flag;
+            let timeEdit = record.timeEdit.split(',')[1];
         
-        timeHoursEdit+=2;
 
-        if(timeHoursEdit >= 24){
-            timeHoursEdit -= 24;
-                }
-
-        if(timeHoursEdit <= 11){
-                flag = "AM";
-                if(timeHoursEdit === 0){
-                    timeHoursEdit = 12; 
-                    
-                }
-
-                  
-            
-        }else{
-            flag = "PM";
-            if(timeHoursEdit !== 12){
-                timeHoursEdit = timeHoursEdit -12;
-                
-            }
-            
-         
-        };
-
-        let scannedAt = `${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
+            let scannedAt = `${timeEdit}`;
 
 
             rows+=`
@@ -502,11 +462,82 @@ attendContainer.addEventListener('click',(e)=>{
     let showBtn = e.target.closest(".show-btn");
 
     if(showBtn){
+        localStorage.setItem("exporExcelId",showBtn.dataset.lecture);
         collapseAttendInstance.show();
         getAttendanceById(showBtn.dataset.lecture);
     }
 });
 
 getAllAttendance();
+
+let excelBtn = document.querySelector('#attend .container .collapse .excel-div .excel-btn');
+
+async function exportToExcel(lectureExcelId){
+    try {
+        const response = await axios.get(`${BASE_URL}/api/export/excel/${lectureExcelId}`,{
+             responseType: 'blob',
+            
+            headers:{
+            "Authorization":`Bearer ${token}`
+
+            }
+        });
+
+        let file_name = response.headers['content-disposition'];
+        let fileName = "attendance.xlsx";
+
+        if(file_name && file_name.toLowerCase().includes('filename=')){
+            fileName = file_name.split('; filename=')[1].replace(/"/g,'').trim();
+        }
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+        console.log(error);
+
+    } finally {
+
+        excelBtn.disabled = false;
+        excelBtn.innerHTML = `
+            <i class="fa-solid fa-file-excel"></i> Export to Excel
+        `
+
+    }
+}
+
+
+
+excelBtn.addEventListener("click",()=>{
+    let ExcelId = localStorage.getItem("exporExcelId");
+
+    excelBtn.disabled = true;
+    excelBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Loading...</span>
+      `
+
+    if(!ExcelId){
+
+    excelBtn.disabled = false;
+    excelBtn.innerHTML = `
+        <i class="fa-solid fa-file-excel"></i> Export to Excel
+        `
+        return;
+    }
+
+    
+        exportToExcel(ExcelId);
+    
+
+});
 
 //---get all lectures and export as excel---//

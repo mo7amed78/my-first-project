@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {Scan} = require('../models/Scan');
 const {User} = require('../models/User');
+const {egyptTime} = require('../utils/timeEdit');
+const {convertTimeDate_ToDate} = require('../utils/timeEdit');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 const asyncHandler = require('express-async-handler');
@@ -10,21 +12,25 @@ const asyncHandler = require('express-async-handler');
 
 /**
  * @desc get all scans for (1st & 2nd secondary) & 3rd Preparatory 
- * @route /api/filter?query
+ * @route /api/filter?today
  * @method GET
  * @access private (admin only)
  */
 router.get('/',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
-    const {filterLectureId} = req.query ;
+    const {today} = req.query; 
+
+    const date = today? new Date(today) : new Date();
 
     const filter = {};
 
-    if(filterLectureId){
-        filter.lectureId = filterLectureId ;
-    }
+    if(date){
+        filter.scannedAt = convertTimeDate_ToDate(date);
+    };
 
-    const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage").select("-__v");
+
+    const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage")
+                                              .populate("lectureId","lectureName").select("-__v");
     const totalStudent = await User.countDocuments({isAdmin:false});
 
     if(filterScan.length === 0){
@@ -54,7 +60,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
  */
 router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
-    const {filterStage,filterLectureId} = req.query ;
+    const {filterStage,filterLectureId} = req.query;
 
     const filter = {};
 
@@ -65,10 +71,10 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     if(filterLectureId){
         filter.lectureId = filterLectureId;
     }
-    const filterScan = await Scan.find(filter).populate("userId","firstName lastName email stage")
+    const filterScanRecords = await Scan.find(filter).populate("userId","firstName lastName email stage")
                                               .populate("lectureId","lectureName stage date").select("-__v");
 
-    if(filterScan.length === 0){
+    if(filterScanRecords.length === 0){
         return res.status(200).json({
             message:"لا يوجد نتائج حالياً",
             count:0,
@@ -76,6 +82,12 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
             
         });
     }
+
+    const filterScan = filterScanRecords.map( item => ({
+        ...item._doc,
+        timeEdit:egyptTime(item.scannedAt)
+
+    }));
 
 
    res.json({

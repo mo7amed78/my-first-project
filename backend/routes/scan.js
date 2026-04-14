@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const {Scan,validateUserScanned} = require('../models/Scan');
+const {User} = require('../models/User');
 const {Lecture} = require('../models/Lecture');
+const{egyptTime} = require('../utils/timeEdit');
+const {convertTimeDate_ToDate} = require('../utils/timeEdit');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 const asyncHandler = require('express-async-handler');
+const socket = require('../utils/socket');
 
 
 /**
@@ -31,7 +35,7 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
     const lecture = await Lecture.findById(req.body.lectureId);
 
     if(!lecture){
-        return res.status(404).json({message:"المحاضرة غير موجودة"});
+        return res.status(200).json({message:"المحاضرة غير موجودة"});
     }
 
     if(lecture.stage !== req.user.stage){
@@ -42,7 +46,49 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
         return res.status(200).json({message:"لقد قمت بمسح هذه المحاضره مسبقاً"});
     }
 
-    const Attend = await userScaned.save();
+    
+    
+    const AttendRecord = await userScaned.save();
+
+    const filter = {};
+    const today = AttendRecord.scannedAt;
+    filter.scannedAt = convertTimeDate_ToDate(today);
+    const updated_num_present = await Scan.countDocuments(filter);
+    const totalStudent = await User.countDocuments({isAdmin:false});
+    
+
+    const filterNumScans = {}
+    filterNumScans.lectureId = AttendRecord.lectureId;
+    filterNumScans.stage = AttendRecord.stage;
+    const update_num_scans = await Scan.countDocuments(filterNumScans);
+
+    //test
+    const filterNewStudent = {}
+    filterNewStudent.userId = AttendRecord.userId;
+    filterNewStudent.lectureId = AttendRecord.lectureId;
+    filterNewStudent.stage = AttendRecord.stage;
+
+    const update_table = await Scan.find(filterNewStudent).populate("userId",'firstName lastName stage');
+
+    const update_table_time = update_table.map(item=>({
+        ...item._doc,
+        timeEdit:egyptTime(item.scannedAt)
+    }));
+
+
+    const io = socket.getIO();
+    io.emit("updated_num_present_absent",{
+        countPresent:updated_num_present,
+        countAbsent:totalStudent - updated_num_present,
+        update_num_scans:update_num_scans,
+        update_table:update_table_time
+    });
+
+    const Attend = {
+        ...AttendRecord._doc,
+        timeEdit:egyptTime(AttendRecord.scannedAt)
+    }
+
    
     res.status(201).json({Attend});
 
@@ -56,12 +102,14 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
  * @access private (admin only)
  */
 router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
-    const scans = await Scan.find().populate("userId","firstName lastName stage email")
+    const scans= await Scan.find().populate("userId","firstName lastName stage email")
                                     .populate("lectureId","lectureName stage date").select("-__v");
 
     if(scans.length === 0){
         return res.status(404).json({message:"لا يوجد نتائج حالياً"});
     }
+
+    
 
     res.json({
         count:scans.length,  

@@ -39,20 +39,26 @@ btn.addEventListener('click',async ()=>{
 
                 //وهنجيب النص اللي قراه لو في نص نبعته للباك اند
                 async (decodedText)=>{
-                    console.log("qrText",decodedText);
+
+                    if(!isScanning) return;
+                    isScanning = false;
                     let textQRCOde = decodedText;
+
+                    setTimeout( async ()=>{
+
                     scannerQrCode(textQRCOde)
                     // and stop camera after reading
                    await html5QrCode.stop();
                     await html5QrCode.clear();
                     cameraOverlay.classList.remove('active');
-                    isScanning = false;
 
+
+                    },2000);
 
                 },
 
                 (errorMessage)=>{
-                    //عشان لو الطالب عمل مسح لاي حاجه من غير قصد هنطنش الغلط دا ف عنسيب الشرط فاضي
+                    //عشان لو الطالب عمل مسح لاي حاجه من غير قصد هنطنش الغلط دا ف هنسيب الشرط فاضي
                 }
             );
 });
@@ -103,36 +109,9 @@ axios.post(`${Base_URL}/api/scan`,bodyParams,{
 }).then((response)=>{
     let attended = response.status  
     if(attended === 201){
-        let timeHoursEdit = +response.data.Attend.scannedAt.slice(11,13);
-        let timeMinutesEdit = response.data.Attend.scannedAt.slice(14,16);
-        let flag;
-        
-        timeHoursEdit+=2;
+        let timeEdit = response.data.Attend.timeEdit.split(',')[1];
 
-        if(timeHoursEdit >= 24){
-            timeHoursEdit -= 24;
-                }
-
-        if(timeHoursEdit <= 11){
-                flag = "AM";
-                if(timeHoursEdit === 0){
-                    timeHoursEdit = 12; 
-                    
-                }
-
-                  
-            
-        }else{
-            flag = "PM";
-            if(timeHoursEdit !== 12){
-                timeHoursEdit = timeHoursEdit -12;
-                
-            }
-            
-         
-        };
-
-        let scannedAt = ` time ${timeHoursEdit}:${timeMinutesEdit} ${flag}`;
+        let scannedAt = ` time ${timeEdit}`;
 
         let name = `${decode.firstName} ${decode.lastName}`;
         
@@ -152,18 +131,28 @@ axios.post(`${Base_URL}/api/scan`,bodyParams,{
 // attendance test function //
 function toast(scannedAt,name,attended,errMsg){
 let toastEl = document.querySelector('.toast');
-const toast = new bootstrap.Toast(toastEl);
+const toast_scan_student = document.getElementById("toast-scan-student");
+const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student);
+// const toast = new bootstrap.Toast(toastEl);
 
-let time = document.querySelector('.toast .toast-header .text-body-secondary');
-let scanState  = document.querySelector('.toast .toast-body .row .scan-state');
-let userName = document.querySelector('.toast .toast-body .row .user-name');
-bg = `${attended === 201? "bg-success-subtle":"bg-danger-subtle"}`;
-toastEl.classList.remove("bg-success-subtle", "bg-danger-subtle");
-toastEl.classList.add(bg);
-time.innerHTML = `${scannedAt}`;
-scanState.innerHTML = `${attended === 201 ?"✅Scanned Successfully":`❌${errMsg}`}`;
-userName.innerHTML = `${name}`;
-toast.show();
+    toast_scan_student.classList.remove('active')
+    
+    toastScanInstance.show();
+
+    setTimeout(()=>{toast_scan_student.classList.add('active');},500)
+
+
+
+    let time = document.querySelector('.toast .toast-header .text-body-secondary');
+    let scanState  = document.querySelector('.toast .toast-body .row .scan-state');
+    let userName = document.querySelector('.toast .toast-body .row .user-name');
+    bg = `${attended === 201? "bg-success-subtle":"bg-danger-subtle"}`;
+    toastEl.classList.remove("bg-success-subtle", "bg-danger-subtle");
+    toastEl.classList.add(bg);
+    time.innerHTML = `${scannedAt}`;
+    scanState.innerHTML = `${attended === 201 ?"✅Scanned Successfully":`❌${errMsg}`}`;
+    userName.innerHTML = `${name}`;
+    
 
 };
 // attendance test function //

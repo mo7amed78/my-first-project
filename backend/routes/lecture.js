@@ -4,7 +4,8 @@ const {Lecture,validateNewLecture} = require('../models/Lecture');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 const asyncHandler = require('express-async-handler');
-
+const {convertTimeDate_ToDate , egyptTime} = require('../utils/timeEdit');
+const socket = require('../utils/socket');
 
 
 /**
@@ -31,6 +32,18 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
 
     const result = await newLecture.save();
 
+    const today = result.createdAt;
+    const filterCountSessionPerDay = {};
+    filterCountSessionPerDay.createdAt = convertTimeDate_ToDate(today);
+    const updated_num_session = await Lecture.countDocuments(filterCountSessionPerDay);
+
+    const io = socket.getIO();
+
+    io.emit("updated_num_session",{
+        updatedNumSession:updated_num_session,
+        updateStageValue:result.stage
+    });
+
     res.json({result});
 
 }));
@@ -45,23 +58,31 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
  * @access private (admin only)
  */
 router.get('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
-    const {lecName} = req.query;
 
-    const find_lec_name = {};
+    const {today} = req.query;
+    
+    const date = today? new Date(today) :null;
 
-    if(lecName){
-        find_lec_name.lectureName =  lecName;
+    const filterCountSessionPerDay = {};
+    if(date){
+        filterCountSessionPerDay.createdAt = convertTimeDate_ToDate(date);
     }
 
-    const get_lecs = await Lecture.find(find_lec_name);
+    const get_lecs_records = await Lecture.find(filterCountSessionPerDay).sort({ createdAt:-1 });
     
-    if(!get_lecs){
+    if(get_lecs_records.length === 0){
         return res.status(200).json({
             message:"لا يوجد محاضرات حالياً",
             count:0,
             lecture:[]
         });
     }
+
+    const get_lecs = get_lecs_records.map(item=>({
+            ...item._doc,
+            timeEdit:egyptTime(item.createdAt)
+    }));
+
 
     res.json({
         countSession:get_lecs.length,

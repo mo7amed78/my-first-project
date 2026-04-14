@@ -7,7 +7,6 @@ const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 
 
-
 /**
  * @desc Get User Profile 
  * @route /api/users/profile
@@ -54,6 +53,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
        return res.status(404).json({message:"لا يوجد مستخدمين"});
         
     }
+    
 
     res.json({
         page:page,

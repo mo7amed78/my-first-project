@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
+const socket = require('../utils/socket');
 
 
 /**
@@ -40,9 +41,18 @@ const isAdmin = require('../middlewares/isAdmin');
 
         const result = await NewUser.save();
 
+        const io = socket.getIO();
+        const update_num_student = await User.countDocuments({isAdmin:false});
+
+        io.emit('update_num_student',update_num_student);
+
+
         const {password,...other} = result._doc;
 
-        res.status(201).json({message:"تم اضافة مستخدم جديد بنجاح",...other});
+        res.status(201).json({
+            message:"تم اضافة مستخدم جديد بنجاح",
+            ...other,
+        });
 
 
 

@@ -22,7 +22,8 @@ const ScanSchema = new mongoose.Schema({
     scannedAt:{
         type:Date,
         default:Date.now
-    }
+    },
+
 });
 
 ScanSchema.index({userId:1 , lectureId:1,},{unique:true});
@@ -35,8 +36,7 @@ const Scan = mongoose.model('scan',ScanSchema);
 function validateUserScanned(obj){
     const schema = joi.object({
         userId:joi.string().length(24).hex().required(),
-        lectureId:joi.string().length(24).hex().required()
-        
+        lectureId:joi.string().length(24).hex().required(),        
     });
 
     return schema.validate(obj);

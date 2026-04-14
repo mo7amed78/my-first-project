@@ -10,6 +10,58 @@
     ?'http://192.168.1.7:3000'
     :window.location.origin;
 
+    //--- websocket---//
+    const socket = io();
+    
+    socket.on("connect",()=>{
+        console.log("connected websocket");
+    });
+
+    socket.on("update_num_student",(num)=>{
+    let update_num_student = document.querySelector('.student-infrom p');
+        update_num_student.innerHTML = num;
+    });
+
+    socket.on("updated_num_present_absent",(data)=>{
+        let update_present_student = document.querySelector('.present-infrom p');
+        let update_absence_student = document.querySelector('.absent-infrom p');
+        let update_number_dashboard = document.querySelector('.stage-div .count');
+        let update_table_student = document.querySelector('#dashboard .table tbody');
+        let update_show_num_QR_page = document.querySelector('#qr .info-div .number-div');
+
+
+        update_present_student.innerHTML = data.countPresent;
+        update_absence_student.innerHTML = data.countAbsent;
+        update_number_dashboard.innerHTML =  `number : ${ data.update_num_scans}`;
+        update_show_num_QR_page.innerHTML = `number : ${ data.update_num_scans}`;
+        
+        let update_table = data.update_table[0]?.userId;
+       
+        let counter = data.update_num_scans;
+        update_table_student.innerHTML += `
+                <tr>
+                <th scope="row">${counter}</th>
+                <td>${update_table.firstName} ${update_table.lastName}</td>
+                <td>${data.update_table[0].timeEdit.split(", ")[1]}</td>
+                <td>${update_table.stage}</td>
+                </tr>
+
+        `
+    });
+
+    socket.on("updated_num_session",(data)=>{
+        let update_num_of_session = document.querySelector('.scan-infrom p');
+        let update_stage_value = document.getElementById('stage-dashboard');
+
+        update_num_of_session.innerHTML = data.updatedNumSession;
+        update_stage_value.value = data.updateStageValue;
+        
+        
+
+
+    });
+    //--- websocket---//
+
 
 //--- open sections--- //
 let sectionBtn = document.querySelectorAll('.offcanvas-body ul li .nav-link');
@@ -18,7 +70,7 @@ let closeNav = document.querySelector('.offcanvas-header .btn-close');
 let navContent = document.querySelector('.offcanvas-body .navbar-nav');
 
 let activeSection = localStorage.getItem('id');
-let name_of_lecture = localStorage.getItem('lectureName');
+let today = localStorage.getItem('dateLecture');
 
 if(activeSection){
 document.getElementById(activeSection).classList.add('active');
@@ -28,8 +80,8 @@ document.getElementById("dashboard").classList.add('active');
 document.querySelector(`[data-target="dashboard"]`).classList.add('active');
 }
 
-if(name_of_lecture){
-    scanSessions(name_of_lecture);
+if(today){
+    scanSessions(today);
 }
 
 navContent.addEventListener('click',(e)=>{
@@ -184,6 +236,11 @@ modalAddBtn.addEventListener('click',()=>{
     formAdd.reset();
 });
 
+const modalAddUserEl = document.querySelector('.modal-form');
+modalAddUserEl.addEventListener('hide.bs.modal',()=>{
+    document.activeElement.blur();
+});
+
 
 
 function validateNewStudent(id,message){
@@ -223,9 +280,10 @@ function validateNewStudent(id,message){
             let limit = response.data.limit;
             let totalPages = response.data.totalPages;
 
-            localStorage.setItem('page',page);
 
+            localStorage.setItem('page',page);
             num_Student.innerHTML = count;
+
 
             let rows = "";
             let counter = (page - 1) * limit;
@@ -275,15 +333,15 @@ function validateNewStudent(id,message){
         let present_student = document.querySelector('.present-infrom p');
         let absence_student = document.querySelector('.absent-infrom p');
 
-        let filterLectureId =localStorage.getItem('lectureId');
+        let today =localStorage.getItem('dateLecture');
 
-        if(!filterLectureId){
+        if(!today){
                  present_student.innerHTML = 0;
                  absence_student.innerHTML = 0;
                  return;
         }
 
-        axios.get(`${BASE_URL}/api/filter?filterLectureId=${filterLectureId}`,{
+        axios.get(`${BASE_URL}/api/filter?today=${today}`,{
             headers:{
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -301,11 +359,11 @@ function validateNewStudent(id,message){
         });
     }
 
-    async function scanSessions(nameLecture){
+    async function scanSessions(date){
         let num_of_session = document.querySelector('.scan-infrom p');
         try {
 
-            const response = await axios.get(`${BASE_URL}/api/lecture?lecName=${nameLecture}`,{
+            const response = await axios.get(`${BASE_URL}/api/lecture?today=${date}`,{
             headers:{
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -420,6 +478,16 @@ let searchText = document.querySelector('.sch-div form .sch');
 async function searchStudents(search){
 
     let tableStudents = document.querySelector('.table-studens-data tbody');
+    tableStudents.innerHTML = `
+        <tr>
+        <th scpoe="row"></th>
+        <td>جاري البحث...</td>
+        <td></td>
+        <td></td>
+        <td></td>        
+        </tr>
+    
+    `;
     try {
     const response = await axios.get(`${BASE_URL}/api/search?search=${search}`,{
         headers:{
@@ -430,7 +498,6 @@ async function searchStudents(search){
 
         let searchs = response.data.result;
 
-        
         let rows = "";
         
         
@@ -453,11 +520,10 @@ async function searchStudents(search){
             }else{
 
 
-            counter = 0;
-            for(search of searchs){
-
+            let counter = 0;
+            for(let search of searchs){
             rows +=`
-                <tr id="${user._id}">
+                <tr id="${search._id}">
                 <th scope="row">${counter+=1}</th>
                 <td>${search.firstName} ${search.lastName}</td>
                 <td>${search.email}</td>
@@ -472,7 +538,7 @@ async function searchStudents(search){
 
                     <div class="delete-user">
                     
-                    <button type="button" class="btn btn-danger delete-btn" data-id="${user._id}><i class="fa-solid fa-trash"></i></button> 
+                    <button type="button" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteUser" data-id="${search._id}"><i class="fa-solid fa-trash"></i></button> 
                     
                     </div>
                 </td>
@@ -495,7 +561,7 @@ async function searchStudents(search){
 }
 
 
-let searchBtn = document.querySelector('.sch-div form  .sch-btn');
+let searchBtn = document.querySelector('.sch-div form .sch-btn');
 searchBtn.addEventListener('click',(e)=>{
 
     searchText.style.border = "0.1px #0000003c solid"
@@ -521,6 +587,8 @@ searchBtn.addEventListener('click',(e)=>{
 
 // update
 let settingsContent = document.querySelector('.table-studens-data tbody');
+let formUpdate = document.querySelector('.modal-update-user');
+
 settingsContent.addEventListener('click',(e)=>{
     //reset
     document.querySelectorAll('.modal-update-user input').forEach(input=>{
@@ -591,8 +659,14 @@ async function updateStudents(studentId){
             setTimeout(()=>{modalInstance.hide();},1000);
             alertText.innerHTML = msg;
             alertText.classList.remove('d-none');
-
             setTimeout(()=>{alertText.classList.add('d-none')},3000);
+
+            document.getElementById(studentId).classList.add('table-success');
+            
+            setTimeout(()=>{
+            document.getElementById(studentId).classList.remove('table-success');
+
+            },1000);
 
         
     }catch (error) {
@@ -601,13 +675,13 @@ async function updateStudents(studentId){
             input.classList.remove('is-invalid');
         });
 
-        document.querySelectorAll('.modal-update-update .invalid-feedback').forEach(msg=>{
+        document.querySelectorAll('.modal-update-user .invalid-feedback').forEach(msg=>{
             msg.innerHTML = '';
         });
 
         document.querySelector('.modal-update-user .div-stage .stage').classList.remove('is-invalid');
 
-        err_msg = error.response.data.message.toLowerCase();
+        let err_msg = error.response.data.message.toLowerCase();
         
         let inputs = ["email" ,"password" , "firstname", "lastname" , "stage"];
 
@@ -641,21 +715,16 @@ validation.innerHTML = message;
 
 
 
-let formUpdate = document.querySelector('.modal-update-user');
-
+let isUpdate = false;
 formUpdate.addEventListener("submit",async (e)=>{
     e.preventDefault();
+    if(isUpdate) return;
+    isUpdate = true;
+
     let studentId = localStorage.getItem('studentId');
 try {
     await updateStudents(studentId);
     let page = localStorage.getItem('page') || 1;
-
-    document.getElementById(studentId).classList.add('table-success');
-    
-    setTimeout(()=>{
-    document.getElementById(studentId).classList.remove('table-success');
-
-    },1000)
 
     setTimeout(()=>{
     getAllStudent(page);
@@ -664,8 +733,12 @@ try {
 
 } catch(err) {
     console.log("حدث خطأ أثناء التحديث", err);
-}    
+}   finally{
+    isUpdate=false;
+
+} 
 });
+
 
 function update(email,firstName,lastName,stage){
 U_email.value = email;
@@ -676,6 +749,10 @@ const modal  = new bootstrap.Modal(document.getElementById('staticBackdropUpdate
 modal.show();
 }
 
+const modalUpdateUserEl = document.querySelector('.modal-form-update');
+modalUpdateUserEl.addEventListener('hide.bs.modal',()=>{
+    document.activeElement.blur();
+});
 
 // delete
 settingsContent.addEventListener("click",(e)=>{
@@ -701,9 +778,14 @@ async function deleteStudents(deleteId){
         let msg = response.data.message;
         alertSuccess.innerHTML = msg;
         alertSuccess.classList.remove('d-none');
-        setTimeout(()=>{alertSuccess.classList.add('d-none');
+        setTimeout(()=>{alertSuccess.classList.add('d-none')},3000);
 
-        },3000);
+            document.getElementById(deleteId).style =`
+            animation-name:deleted;
+            animation-duration: 1s;
+            
+             `
+
 
     } catch (error) {
 
@@ -713,37 +795,32 @@ async function deleteStudents(deleteId){
         setTimeout(()=>{alertFalied.classList.add('d-none');
         },3000);
         
-    }
+    } 
 }
 
 
 let deleteBtn = document.querySelector('.modal-form-delete .modal-delete-btn');
-let modalDeleteUser = document.getElementById('deleteUser');
+let modalDeleteUserEl = document.getElementById('deleteUser');
  let isDeleted = false;
 
 deleteBtn.addEventListener('click',async ()=>{
        
-    let deletedId = localStorage.getItem('studentDelId');
+    let deleteId = localStorage.getItem('studentDelId');
 
-    if(!deletedId) return;
+    if(!deleteId) return;
 
     if(isDeleted) return;
     isDeleted = true;
 
 
-    await deleteStudents(deletedId);
+    await deleteStudents(deleteId);
 
-    const modalDeleted = bootstrap.Modal.getOrCreateInstance(modalDeleteUser);
+    const modalDeleted = bootstrap.Modal.getOrCreateInstance(modalDeleteUserEl);
     modalDeleted.hide();
     
     isDeleted = false;
      let page = localStorage.getItem('page') || 1;
 
-       document.getElementById(deletedId).style =`
-       animation-name:deleted;
-       animation-duration: 1s;
-       
-       `
         setTimeout(()=>{
             getAllStudent(page);
         },1500)
@@ -754,6 +831,9 @@ deleteBtn.addEventListener('click',async ()=>{
    
 });
 
+modalDeleteUserEl.addEventListener('hide.bs.modal',()=>{
+    document.activeElement.blur();
+});
 //--- update and delete student--- //
 
 
