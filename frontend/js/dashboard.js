@@ -52,9 +52,13 @@
     socket.on("updated_num_session",(data)=>{
         let update_num_of_session = document.querySelector('.scan-infrom p');
         let update_stage_value = document.getElementById('stage-dashboard');
+        let update_present_student = document.querySelector('.present-infrom p');
+        let update_absence_student = document.querySelector('.absent-infrom p');
 
         update_num_of_session.innerHTML = data.updatedNumSession;
         update_stage_value.value = data.updateStageValue;
+        update_present_student.innerHTML = data.countPresent;
+        update_absence_student.innerHTML = data.countAbsent;
         
         
 
@@ -664,9 +668,14 @@ async function updateStudents(studentId){
             document.getElementById(studentId).classList.add('table-success');
             
             setTimeout(()=>{
-            document.getElementById(studentId).classList.remove('table-success');
+                if(document.getElementById(studentId)){
+                  document.getElementById(studentId).classList.remove('table-success');
+                }else{
+                    return;
+                }
 
             },1000);
+
 
         
     }catch (error) {
@@ -715,11 +724,8 @@ validation.innerHTML = message;
 
 
 
-let isUpdate = false;
 formUpdate.addEventListener("submit",async (e)=>{
     e.preventDefault();
-    if(isUpdate) return;
-    isUpdate = true;
 
     let studentId = localStorage.getItem('studentId');
 try {
@@ -733,10 +739,8 @@ try {
 
 } catch(err) {
     console.log("حدث خطأ أثناء التحديث", err);
-}   finally{
-    isUpdate=false;
+}
 
-} 
 });
 
 

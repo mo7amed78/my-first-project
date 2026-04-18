@@ -1,6 +1,18 @@
 
 // guard
 //guard
+ token = localStorage.getItem('token');
+
+    if(!token){
+        console.log("invalid token");
+    }
+
+ BASE_URL =
+  window.location.hostname === 'localhost'
+    ? 'http://192.168.1.7:3000'
+    :  window.location.origin;
+
+
 
 let cameraOverlay = document.querySelector('#cameraOverlay');
 let closeBtn = document.querySelector('#cameraOverlay #div-close-btn #closeOverlay');
@@ -82,26 +94,14 @@ closeBtn.addEventListener('click', async()=>{
 
 function scannerQrCode(textQRCOde){
 
-const token = localStorage.getItem('token');
-
-    if(!token){
-        console.log('Token not found!');
-        return;
-    }
-
     const decode = jwt_decode(token);
-    const Base_URL =
-  window.location.hostname === 'localhost'
-    ? 'http://192.168.1.7:3000'
-    :  window.location.origin;
-
 
     let bodyParams ={
         userId:decode.id,
         lectureId:textQRCOde,
     };
 
-axios.post(`${Base_URL}/api/scan`,bodyParams,{
+axios.post(`${BASE_URL}/api/scan`,bodyParams,{
     headers:{
         'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -119,6 +119,13 @@ axios.post(`${Base_URL}/api/scan`,bodyParams,{
         toast(scannedAt,name,attended);
     }else if(attended === 200){
         errMesg = response.data.message;
+
+        if(errMesg.toLowerCase().includes("lectureid")){
+            errMesg = "المحاضرة غير موجودة"
+            toast('','',attended,errMesg);
+            return;
+        }
+
         toast('','',attended,errMesg);
     }
 }).catch((error)=>{
@@ -157,3 +164,29 @@ const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student
 };
 // attendance test function //
 
+
+// show student profile //
+async function studentProfile(){
+    let student_profile = document.querySelector('.student-profile-body');
+   
+    try {
+        const response = await axios.get(`${BASE_URL}/api/users/profile`,{
+            headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            }
+        });
+        let studentData = response.data.UserProfile;
+
+        student_profile.innerHTML = `
+       <span>اسم الطالب : ${studentData.firstName} ${studentData.lastName}</span> 
+       <span>البريد الالكتروني : ${studentData.email}</span> 
+       <span> الصف : ${studentData.stage}</span>
+        `
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+studentProfile();
+// show student profile //

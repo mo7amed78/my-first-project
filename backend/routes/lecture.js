@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {Lecture,validateNewLecture} = require('../models/Lecture');
+const {Scan} = require('../models/Scan');
+const { User } = require('../models/User');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
 const asyncHandler = require('express-async-handler');
@@ -34,17 +36,26 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
 
     const today = result.createdAt;
     const filterCountSessionPerDay = {};
+    const filterAtendedRecord ={};
+
     filterCountSessionPerDay.createdAt = convertTimeDate_ToDate(today);
     const updated_num_session = await Lecture.countDocuments(filterCountSessionPerDay);
+
+    filterAtendedRecord.scannedAt = convertTimeDate_ToDate(today);
+    const update_present = await Scan.countDocuments(filterAtendedRecord);
+    const totalStudent = await User.countDocuments({isAdmin:false});
 
     const io = socket.getIO();
 
     io.emit("updated_num_session",{
         updatedNumSession:updated_num_session,
-        updateStageValue:result.stage
+        updateStageValue:result.stage,
+        countPresent:update_present,
+        countAbsent:totalStudent - update_present
+
     });
 
-    res.json({result});
+    res.status(201).json({result});
 
 }));
 

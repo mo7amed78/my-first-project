@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="../css/libs/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">    
     <link rel="stylesheet" href="../css/dashboard.css">
-
+    <link rel="stylesheet" href="../css/loading.css">
+    <link rel="icon" type="image/x-icon"  href="../favicon/dashboard.png">
     <title>Dashboard</title>
 </head>
 <body>
@@ -208,7 +209,7 @@
 </div>
 <!--// Modal delete user// -->
 
-<!-- Modal delete user -->
+<!-- Modal logout -->
 <div class="modal fade modal-form-logout-dashboard" id="logoutDash" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -216,7 +217,7 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Logout</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body modal-delete-user">
+      <div class="modal-body modal-logout-user">
         <h5 class="text-danger">هل انت متأكد من تسجيل الخروج ؟</h5>
       </div>
       <div class="modal-footer">
@@ -226,12 +227,18 @@
     </div>
   </div>
 </div>
-<!--// Modal delete user// -->
+<!--// Modal logout// -->
 
+    
+    <div class="loading-bcg">
+        <div class="loading">
+            <!-- loading... -->
+        </div>
+    </div>
 
 
   <!-- navbar -->
-<nav class="main-nav navbar bg-body-tertiary fixed-top">
+<nav class="main-nav navbar bg-body-tertiary fixed-top hidden">
   <div class="container-fluid d-flex">
     <a class="navbar-brand" href="#">Admin Dashboard</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -276,7 +283,7 @@
 
 <br><br><br>
 <!-- dashboard section -->
-<section id="dashboard" class="section">
+<section id="dashboard" class="section hidden">
 <div class="container">
 
 <div class="row g-2">
@@ -386,7 +393,7 @@
 
 
 <!-- students section -->
-<section id="students" class="section">
+<section id="students" class="section hidden">
   
 
   <br>
@@ -432,7 +439,7 @@
 
 
 <!-- attend section -->
-<section id="attend" class="section">
+<section id="attend" class="section hidden">
 
   <div class="container">
     <h4>Attendance</h4>
@@ -507,7 +514,7 @@
 <!--// attend section //-->
 
 <!-- qr section -->
-<section id="qr" class="section">
+<section id="qr" class="section hidden">
   
     <div class="qr-content">
 
@@ -574,7 +581,7 @@
   A simple success alert—check it out!
 </div>
 
- <footer class="footer-student bg-light d-flex justify-content-around text-muted py-2  border-top">
+ <footer class="footer-student bg-light d-flex justify-content-around text-muted py-2  border-top hidden">
   <!-- Button trigger modal add user -->
 <button type="button" class="btn btn-success modal-user-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
   <i class="fa-solid fa-user-plus"></i> Add Student
@@ -603,6 +610,9 @@
 
       <!-- socket.io -->
        <script src="/socket.io/socket.io.js"></script>
+
+     <!-- loading.js -->
+     <script src="../js/loading.js"></script>
       <!-- logout.js -->
      <script src="../js/logout.js"></script>
         <!-- Qrcode.js -->

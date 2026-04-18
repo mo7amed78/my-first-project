@@ -21,7 +21,7 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
     const {error} = validateUserScanned(req.body);
 
     if(error){
-       return res.status(400).json({message:error.details[0].message});
+       return res.status(200).json({message:error.details[0].message});
     }
 
     const userScaned = new Scan({

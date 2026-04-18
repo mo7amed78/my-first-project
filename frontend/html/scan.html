@@ -4,18 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
     <link rel="stylesheet" href="../css/libs/all.min.css">
     <link rel="stylesheet" href="../css/scan.css">
+    <link rel="stylesheet" href="../css/loading.css">
+    <link rel="icon" type="image/x-icon" href="../favicon/qr-code.png">
     <title>Scan</title>
   </head>
 <body>
 
-<nav class="navbar">
+
+  <!-- modal show user profile -->
+<div class="modal fade" id="student-profile" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="student-profile">بيانات الطالب</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body student-profile-body" dir="rtl">
+              <!-- students data -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-danger" data-bs-target="#profile-logout" data-bs-toggle="modal">تسجيل الخروج</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="profile-logout" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="profile-logout">تسجيل الخروج</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body student-profile-logout text-danger">
+        هل انت متأكد من تسجيل الخروج ؟
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-bs-target="#student-profile" data-bs-toggle="modal">العودة الي الخلف</button>
+        <button class="btn btn-danger logout-scan-page-btn">نعم</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- // modal show user profile // -->
+
+
+  <div class="loading-bcg">
+      <div class="loading">
+          <!-- loading... -->
+      </div>
+  </div>
+
+
+<nav class="navbar nav-scan hidden">
   <div class="container-fluid d-flex justify-content-around">
     <a href="#" class="navbar-brand" style="display:flex; align-items:center; gap:10px; font-weight: 700;"><i class="fa fa-qrcode" style="font-size:30px; color:#3c9659;"></i>Scan QR Code</a>
-    <div style="font-size:17px; font-weight: 500; color:blueviolet" class="hello-user">
-        Hello User!
+    <div class="hello-user">
+         <a  data-bs-target="#student-profile" data-bs-toggle="modal"><i class="fa-solid fa-circle-user"></i></a>
     </div>
 </div>
 </nav>
@@ -37,7 +86,7 @@
 
 
 
-<div class="container" style="margin-top: 70px;">
+<div class="container contain-scan hidden" style="margin-top: 70px;">
     <div class="row mt-4"> 
         <div class=" QR col-lg-8 justify-content-center p-4">
             <div class=" scanner row justify-content-center">
@@ -69,13 +118,13 @@
     </div>
 </div>
     
-<small class="text-body-secondary" style=" display:block; margin:10px;">Point your camera at the QR code to record attendance</small>
+<small class="text-body-secondary hidden" style=" display:block; margin:10px;">Point your camera at the QR code to record attendance</small>
 
-<footer class="bg-light text-center text-muted py-2 mt-5 border-top">
+<footer class="bg-light text-center text-muted py-2 mt-5 border-top footer-scan hidden">
   © 2026 <span class="fw-semibold">QR Scanner</span> — All Rights Reserved
   <span class="dev-name"></span>
   <p style="text-align:center; font-size:14px; color:#555;">
-  Developed by <i class="fa fa-code" style="color:#0d6efd;"></i> Eng.Mohamed Ahmed
+  Developed by <i class="fa fa-code" style="color:#0d6efd;"></i> <span class="text-success fw-medium fst-italic">Eng.Mohamed Ahmed</span>
 </p>
 
 </footer>
@@ -110,6 +159,11 @@
   
     <!-- scan library -->
     <script src="../js/libs/html5-qrcode.min.js"></script>
+
+     <!-- loading.js -->
+     <script src="../js/loading.js"></script>
+    <!-- logout.js -->
+     <script src="../js/logout.js"></script>
 
     <!-- Scan.js -->
     <script src="../js/scan.js"></script>

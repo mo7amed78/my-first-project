@@ -107,7 +107,7 @@ router.get('/excel/:lectureId',verifyToken,isAdmin,asyncHandler( async(req,res)=
         );
         res.setHeader(
             "Content-Disposition",
-            "attachment; filename=" + `${data[0].lectureId.lectureName}_${(data[0].lectureId.date).toISOString().split("T")[0]}.xlsx`
+            "attachment; filename=" + `${data[0].lectureId.lectureName}_${data[0].timeEdit.split(", ")[0].replaceAll("/","-")}.xlsx`
         );
 
         

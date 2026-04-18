@@ -16,7 +16,6 @@ const isAdmin = require('../middlewares/isAdmin');
 
 router.get('/profile',verifyToken,asyncHandler( async (req,res)=>{
 
-    console.log(req.user); 
 
     const UserProfile = await User.findById(req.user.id).select("-password  -_id  -isAdmin  -__v");
 

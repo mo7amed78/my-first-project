@@ -7,15 +7,23 @@
     <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
     <link rel="stylesheet" href="../css/libs/all.min.css">
     <link rel="stylesheet" href="../css/loginStyle.css">
+    <link rel="stylesheet" href="../css/loading.css">
+    <link rel="icon" type="image/x-icon" href="../favicon/login.png">
     <title>Login</title>
 </head>
   <body>
-        <div class="hello-msg-mobile" style="text-align:center;">
-        <h1 style="font-family:sans-serif; font-weight:700; color:#ffffff; font-size:35px;">welcome Back!</h1>
+        <div class="loading-bcg">
+            <div class="loading">
+                <!-- loading... -->
+            </div>
+        </div>
+
+        <div class="hello-msg-mobile hidden" style="text-align:center;">
+        <h1 style="font-family:sans-serif; font-weight:700; color:#ffffff; font-size:35px;">Welcome Back!</h1>
         <h5 class="subtitle">Please login to your account</h5>
         </div>
 
-        <div id="login-form" class="card">
+        <div id="login-form" class="card hidden">
             <div class="login-back">
                 <div class="login">
                     <div class="hello-msg">
@@ -59,6 +67,8 @@
     <!-- Axios -->
      <script src="../js/libs/axios.min.js"></script>
 
+     <!-- loading.js -->
+     <script src="../js/loading.js"></script>
         <!-- login.js -->
     <script src="../js/login.js"></script>
   </body>

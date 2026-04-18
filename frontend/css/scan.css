@@ -74,6 +74,28 @@ top:0;
 width:100%;
 }
 
+.navbar .hello-user a{
+    display:inline-block;
+    background-color:darkviolet;
+    color:#ffffff;
+    font-size:35px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+}
+
+.student-profile-body span{
+    display:block;
+    padding:10px;
+    font-weight: 600;
+    color:darkviolet;
+    font-family: 'Cairo', sans-serif;
+    
+}
+
 .QR{
     background: #f8f9fc;
     box-shadow:5px 5px 5px rgba(0,0,0,0.2);
