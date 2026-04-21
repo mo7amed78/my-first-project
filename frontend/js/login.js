@@ -1,29 +1,17 @@
+const token =localStorage.getItem('token');
 
-// // guard
+if(token){
+    const decode = jwt_decode(token);
 
-// const token = localStorage.getItem('token');
-// const now = Date.now();
+    if(decode.isAdmin){
+        window.location.replace('/dashboard-page')
 
-// if(token){
+    }else{
+        window.location.replace('/scan-page')
 
-//     const decode = jwt_decode(token);
+    }
+}
 
-//     if(!decode.isAdmin){
-//         window.location.href = "../html/scan.html"; // user
-//     }else{
-//         window.location.href = "../html/dashboard.html"; //admin only
-//     }
-
-//     // check if exp is end remove token
-//     if(decode.exp < now){
-//         localStorage.removeItem('token');
-//         window.location.href = "../html/login.html"; 
-//     }
-    
-
-// }else{
-//         window.location.href = "../html/login.html"; 
-// }
 
 let email = document.querySelector('form div #exampleInputEmail1');
 let password = document.querySelector('form div #exampleInputPassword1');
@@ -55,9 +43,9 @@ axios.post(`${BASE_URL}/api/auth/login`,bodyParams)
 
     const decode = jwt_decode(token);
     if(decode.isAdmin){
-        window.location.href = '/dashboard-page';
+        window.location.replace('/dashboard-page');
     }else{
-        window.location.href = '/scan-page';
+        window.location.replace('/scan-page');
     }
      
 })

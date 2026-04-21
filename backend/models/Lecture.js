@@ -24,9 +24,20 @@ const LectureSchema = new mongoose.Schema({
 },{timestamps:true});
 
 
+const ActiveLectureSchema = new mongoose.Schema({
+    currentLectureId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref : "lecture",
+        required:true
+    }
+});
+
+
 LectureSchema.index({lectureName:1 , stage:1},{unique:true});
 
 const Lecture = mongoose.model("lecture",LectureSchema);
+
+const ActiveLecture = mongoose.model("activeLecture",ActiveLectureSchema);
 
 
 // validate add lecture 
@@ -41,5 +52,6 @@ function validateNewLecture(obj){
 
 module.exports = {
     Lecture,
-    validateNewLecture
+    validateNewLecture,
+    ActiveLecture
 }

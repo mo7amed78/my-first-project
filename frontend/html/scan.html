@@ -52,6 +52,34 @@
 </div>
   <!-- // modal show user profile // -->
 
+  <!-- modal end session -->
+<div class="modal fade" id="sessionExpiredModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+      <div class="modal-body" dir="rtl" style="font-family: 'Cairo', sans-serif;">
+
+        <h3 class="text-danger" style="font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> انتهت الجلسة</h3>
+
+        <p style="white-space:pre-wrap; font-weight:500;">
+          عذراً ، انتهت صلاحية جلستك ولم
+          نتمكن من تجديدها تلقائياً بعد عدة محاولات.
+
+          يرجي تسجيل الدخول مرة أخري
+          للمتابعة.
+        </p>
+
+        <button type="button" class="btn btn-danger login-again"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الدخول مرة اخري</button>
+        
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!--// modal end session //-->
+
 
   <div class="loading-bcg">
       <div class="loading">
@@ -160,13 +188,17 @@
     <!-- scan library -->
     <script src="../js/libs/html5-qrcode.min.js"></script>
 
-     <!-- loading.js -->
-     <script src="../js/loading.js"></script>
     <!-- logout.js -->
      <script src="../js/logout.js"></script>
+      <!-- axiosConfig.js -->
+     <script src="../js/axiosConfig.js"></script>
 
+
+     <!-- loading.js -->
+     <script src="../js/loading.js"></script>
     <!-- Scan.js -->
     <script src="../js/scan.js"></script>
+
 </body>
 </html>
 

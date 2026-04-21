@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/libs/bootstrap.min.css">
     <link rel="stylesheet" href="../css/libs/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">    
@@ -229,6 +230,36 @@
 </div>
 <!--// Modal logout// -->
 
+
+  <!-- modal end session -->
+<div class="modal fade" id="sessionExpiredModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+      <div class="modal-body" dir="rtl" style="font-family: 'Cairo', sans-serif;">
+
+        <h3 class="text-danger" style="font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> انتهت الجلسة</h3>
+
+        <p style="white-space:pre-wrap; font-weight:500;">
+          عذراً ، انتهت صلاحية جلستك ولم
+          نتمكن من تجديدها تلقائياً بعد عدة محاولات.
+
+          يرجي تسجيل الدخول مرة أخري
+          للمتابعة.
+        </p>
+
+        <button type="button" class="btn btn-danger login-again"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الدخول مرة اخري</button>
+        
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!--// modal end session //-->
+
+
     
     <div class="loading-bcg">
         <div class="loading">
@@ -367,7 +398,7 @@
     </select>
 
 
-    <span class="count col-12 col-sm-4 bg-info bg-gardient">number : 0</span>
+    <span class="count col-12 col-sm-4 bg-success bg-gardient">number : 0</span>
   </div>
 
 
@@ -536,7 +567,7 @@
 
     <div class="info-div">
 
-      <div class="number-div  bg-info bg-gradient">
+      <div class="number-div  bg-success bg-gradient">
         number : 0
       </div>
 
@@ -611,13 +642,19 @@
       <!-- socket.io -->
        <script src="/socket.io/socket.io.js"></script>
 
-     <!-- loading.js -->
-     <script src="../js/loading.js"></script>
       <!-- logout.js -->
      <script src="../js/logout.js"></script>
-        <!-- Qrcode.js -->
+      <!-- axiosConfig.js -->
+     <script src="../js/axiosConfig.js"></script>
+
+
+      <!-- loading.js -->
+     <script src="../js/loading.js"></script>
+
+    <!-- Qrcode.js -->
      <script src="../js/QRcode.js"></script>
-        <!-- dashboard.js -->
+
+      <!-- dashboard.js -->
     <script src="../js/dashboard.js"></script>
 
 </body>

@@ -41,9 +41,41 @@ logoutScanPage.addEventListener('click',()=>{
 
 
 
+// verify Token//
+function getToken(){
+    return localStorage.getItem("token");
+}
+
+function autoLogout(){
+    const token = localStorage.getItem("token");
+
+    if(!token){
+        logout();
+        return;
+    }
+
+    const decode = jwt_decode(token);
+    const exp = decode.exp;
+    const now = Math.floor(Date.now()/1000);
+
+
+    if(exp <= now && !isSessionModalOpen){
+    const sessionExpiredModalEl = document.getElementById("sessionExpiredModal");
+    isSessionModalOpen = true;
+
+    if(sessionExpiredModalEl){
+        const sessionExpiredModal = bootstrap.Modal.getOrCreateInstance(sessionExpiredModalEl);
+        sessionExpiredModal.show();
+
+    }
+
+        return;
+    }
+}
+// verify Token//
 
 
 function logout(){
-    localStorage.clear();
-    window.location.href = '/';
+localStorage.removeItem('token');
+window.location.replace('/');
 }

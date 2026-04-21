@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {Scan,validateUserScanned} = require('../models/Scan');
 const {User} = require('../models/User');
-const {Lecture} = require('../models/Lecture');
+const {Lecture,ActiveLecture} = require('../models/Lecture');
 const{egyptTime} = require('../utils/timeEdit');
 const {convertTimeDate_ToDate} = require('../utils/timeEdit');
 const verifyToken = require('../middlewares/verifyToken');
@@ -29,6 +29,14 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
         lectureId:req.body.lectureId, // عشان اقدر اشوف مين عمل مسح قبل كدا واوقفه
         stage:req.user.stage // to use filter only in other routes
     });
+
+    
+    const isActiveLec = await ActiveLecture.findOne();
+
+    if(!isActiveLec || isActiveLec.currentLectureId.toString() !== req.body.lectureId){
+
+        return res.status(200).json({message:"انتهت صلاحية المحاضرة"})
+    }
 
     const duplicateScan = await Scan.findOne({userId:req.user.id , lectureId:req.body.lectureId});
 

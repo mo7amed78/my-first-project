@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Lecture,validateNewLecture} = require('../models/Lecture');
+const {Lecture,ActiveLecture,validateNewLecture} = require('../models/Lecture');
 const {Scan} = require('../models/Scan');
 const { User } = require('../models/User');
 const verifyToken = require('../middlewares/verifyToken');
@@ -26,6 +26,18 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     const newLecture = new Lecture({
         ...req.body
     });
+
+
+    // active lecture //
+     await ActiveLecture.updateOne(
+        {},
+        {
+           currentLectureId:newLecture._id
+        },
+        {upsert:true}
+    )
+    // active lecture //
+
 
     const duplicateLecture = await Lecture.findOne({lectureName:req.body.lectureName , stage:req.body.stage});
     if(duplicateLecture){

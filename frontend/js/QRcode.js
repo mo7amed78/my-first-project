@@ -1,8 +1,3 @@
-    token = localStorage.getItem('token');
-
-    if(!token){
-        console.log("invalid token");
-    }
    
     BASE_URL =
     window.location.hostname === "localhost"
@@ -93,6 +88,8 @@ let stageChoose = document.querySelector('.stage-choose');
     
 
 async function filterAbsence(){
+    const token = getToken();
+
     let table = document.querySelector('#dashboard .table tbody');
     let number = document.querySelector('.stage-div .count');
 
@@ -215,6 +212,8 @@ stageChoose.addEventListener('change',(e)=>{
 //---generate new lecture---//
 async function newLecture(){
 
+const token = getToken();
+
 let lectureName = document.querySelector('.body-lecture div .lecture-name');
 let lectureStage = document.querySelector('.body-lecture div .stage-lecture');
 let lectureTitle = document.querySelector('.stage-div .lecture-name');
@@ -325,6 +324,8 @@ modalAddNewLectureEl.addEventListener('hide.bs.modal',()=>{
 
 //---get all lectures and export as excel---//
 async function getAllAttendance(){
+    const token = getToken();
+
     let attendanceInfo = document.getElementById('attendance-info');
     try {
       const response = await axios.get(`${BASE_URL}/api/lecture`,{
@@ -371,6 +372,9 @@ async function getAllAttendance(){
 
 
 async function getAttendanceById(lectureId){
+    const token = getToken();
+
+
     let tableData = document.getElementById("table-attend-excel");
     let attendHeadInfo = document.querySelector("#attend .attend-head .attend-info");
     let excelBtn = document.querySelector('#attend .attend-head .excel-div .excel-btn');
@@ -473,6 +477,8 @@ getAllAttendance();
 let excelBtn = document.querySelector('#attend .container .collapse .excel-div .excel-btn');
 
 async function exportToExcel(lectureExcelId){
+    const token = getToken();
+
     try {
         const response = await axios.get(`${BASE_URL}/api/export/excel/${lectureExcelId}`,{
              responseType: 'blob',

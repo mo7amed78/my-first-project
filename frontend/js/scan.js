@@ -1,11 +1,5 @@
 
-// guard
-//guard
- token = localStorage.getItem('token');
-
-    if(!token){
-        console.log("invalid token");
-    }
+setInterval(()=>{autoLogout();},60000);
 
  BASE_URL =
   window.location.hostname === 'localhost'
@@ -26,22 +20,27 @@ let isScanning = false;
 document.querySelectorAll('.scan-btn').forEach(btn=>{
 btn.addEventListener('click',async ()=>{
     
-  if(isScanning) return;
-  isScanning = true;
+    if(isScanning) return;
+    isScanning = true;
+    cameraOverlay.classList.add("active");
+
 
     if(html5QrCode){
         try {
             await html5QrCode.stop();
-             html5QrCode.clear();
+            html5QrCode.clear();
 
         } catch (e) {}
 
-
     }
-        cameraOverlay.classList.add("active");
+    
+   
+
 
        html5QrCode = new Html5Qrcode("reader");
-
+       
+       try {
+        
            await html5QrCode.start(
                 { facingMode: "environment" }, // back or front camera
                 {
@@ -72,10 +71,15 @@ btn.addEventListener('click',async ()=>{
                 (errorMessage)=>{
                     //عشان لو الطالب عمل مسح لاي حاجه من غير قصد هنطنش الغلط دا ف هنسيب الشرط فاضي
                 }
-            );
+            ); 
+       } catch (error) {
+            alert("يجب السماح للمتصفح باستخدام الكاميرا أولاً");
+            cameraOverlay.classList.remove("active");
+            isScanning = false;
+       }
 });
 
-})
+});
 
 
 // stop camera //
@@ -93,6 +97,7 @@ closeBtn.addEventListener('click', async()=>{
 
 
 function scannerQrCode(textQRCOde){
+    const token = getToken();
 
     const decode = jwt_decode(token);
 
@@ -140,7 +145,6 @@ function toast(scannedAt,name,attended,errMsg){
 let toastEl = document.querySelector('.toast');
 const toast_scan_student = document.getElementById("toast-scan-student");
 const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student);
-// const toast = new bootstrap.Toast(toastEl);
 
     toast_scan_student.classList.remove('active')
     
@@ -167,6 +171,8 @@ const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student
 
 // show student profile //
 async function studentProfile(){
+    const token = getToken();
+
     let student_profile = document.querySelector('.student-profile-body');
    
     try {

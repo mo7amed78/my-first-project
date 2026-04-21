@@ -1,9 +1,4 @@
-
-    const token = localStorage.getItem('token');
-
-    if(!token){
-        console.log("invalid token");
-    }
+    setInterval(()=>{autoLogout()},60000);
 
     const BASE_URL =
     window.location.hostname === "localhost"
@@ -36,8 +31,13 @@
         update_show_num_QR_page.innerHTML = `number : ${ data.update_num_scans}`;
         
         let update_table = data.update_table[0]?.userId;
-       
+        
+        if(update_table_student.textContent.includes('لا يوجد نتائج حالياً')){
+            update_table_student.innerHTML = "";
+        }
+
         let counter = data.update_num_scans;
+
         update_table_student.innerHTML += `
                 <tr>
                 <th scope="row">${counter}</th>
@@ -132,6 +132,8 @@ let formAdd = document.querySelector('.modal-add-user');
 let modalAddBtn = document.querySelector('.footer-student .modal-user-btn');
 
 function addUser(){
+    const token = getToken();
+
     let email = document.querySelector('.modal-add-user .div-email #inputEmail');
     let password = document.querySelector('.modal-add-user .div-password #inputPassword');
     let firstName = document.querySelector('.modal-add-user .div-first #first-name');
@@ -268,6 +270,9 @@ function validateNewStudent(id,message){
     let U_stage = document.querySelector('.modal-update-user .div-stage #stage2');
     let currentPage = 1;
     function getAllStudent(currentPage){
+
+        const token = getToken();
+        
         let num_Student = document.querySelector('.student-infrom p');
         let tableStudents = document.querySelector('.table-studens-data tbody');
         
@@ -334,6 +339,8 @@ function validateNewStudent(id,message){
     }
 
     function presentAndAbsent(){
+        const token = getToken();
+
         let present_student = document.querySelector('.present-infrom p');
         let absence_student = document.querySelector('.absent-infrom p');
 
@@ -364,6 +371,8 @@ function validateNewStudent(id,message){
     }
 
     async function scanSessions(date){
+        const token = getToken();
+        
         let num_of_session = document.querySelector('.scan-infrom p');
         try {
 
@@ -455,6 +464,8 @@ function renderPagination(currentPage,totalPages){
 
 //--- get student by id and put data in update modal ---//
 async function getStudentsId(id){
+    const token = getToken();
+    
     try {
     const response = await axios.get(`${BASE_URL}/api/users/${id}`,{
     headers:{
@@ -480,6 +491,7 @@ async function getStudentsId(id){
 let searchText = document.querySelector('.sch-div form .sch');
 
 async function searchStudents(search){
+    const token = getToken();
 
     let tableStudents = document.querySelector('.table-studens-data tbody');
     tableStudents.innerHTML = `
@@ -622,6 +634,7 @@ settingsContent.addEventListener('click',(e)=>{
 });
 
 async function updateStudents(studentId){
+    const token = getToken();
 
     let bodyParmas = {
     email:U_email.value,
@@ -767,6 +780,8 @@ settingsContent.addEventListener("click",(e)=>{
 });
 
 async function deleteStudents(deleteId){
+    const token = getToken();
+    
     let alertSuccess = document.querySelector('.alert');
     let alertFalied = document.querySelector('.alert-failed');
     
