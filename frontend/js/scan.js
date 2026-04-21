@@ -161,7 +161,7 @@ const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student
     toastEl.classList.remove("bg-success-subtle", "bg-danger-subtle");
     toastEl.classList.add(bg);
     time.innerHTML = `${scannedAt}`;
-    scanState.innerHTML = `${attended === 201 ?"✅Scanned Successfully":`❌${errMsg}`}`;
+    scanState.innerHTML = `${attended === 201 ?`<i class="fa-solid fa-circle-check fs-6 text-success"></i> Scan Successfully!`:`<i class="fa-solid fa-circle-xmark fs-4 text-danger"></i> ${errMsg}`}`;
     userName.innerHTML = `${name}`;
     
 
