@@ -1,3 +1,5 @@
+    
+    checkAuthAdmin();
     setInterval(()=>{autoLogout()},60000);
 
     const BASE_URL =
@@ -130,6 +132,7 @@ window.addEventListener('scroll', () => {
 //---add students---//
 let formAdd = document.querySelector('.modal-add-user');
 let modalAddBtn = document.querySelector('.footer-student .modal-user-btn');
+let formAddBtn = document.querySelector(".modal-add-user .fotmAddBtn");
 
 function addUser(){
     const token = getToken();
@@ -205,7 +208,13 @@ function addUser(){
 
             document.querySelector('.modal-add-user .div-stage .stage').classList.remove('is-invalid');
 
-            err_msg = error.response.data.message.toLowerCase();
+            let err_msg = error.response?.data.message
+
+            if(err_msg){
+                err_msg = err_msg.toLowerCase();
+            }else{
+                err_msg = "email";
+            }
             
             let inputs = ["email" ,"password" , "firstname", "lastname" , "stage"];
 
@@ -217,7 +226,12 @@ function addUser(){
 
             });
 
-        });
+        }).finally(()=>{
+
+            formAddBtn.disabled = false;
+            formAddBtn.innerHTML = "Add User";
+
+        })
     
 
 }
@@ -225,8 +239,17 @@ function addUser(){
 
 formAdd.addEventListener('submit',(e)=>{
     e.preventDefault();
+
+    formAddBtn.disabled = true;
+    formAddBtn.innerHTML = `
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span role="status">Adding...</span>
+    `
+
     addUser();
+
 });
+
 
 modalAddBtn.addEventListener('click',()=>{
     //reset all inputs and error message here and reset form

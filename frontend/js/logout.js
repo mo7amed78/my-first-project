@@ -58,7 +58,7 @@ function autoLogout(){
     const exp = decode.exp;
     const now = Math.floor(Date.now()/1000);
 
-
+    
     if(exp <= now && !isSessionModalOpen){
     const sessionExpiredModalEl = document.getElementById("sessionExpiredModal");
     isSessionModalOpen = true;
@@ -74,8 +74,37 @@ function autoLogout(){
 }
 // verify Token//
 
+// check auth //
+function checkAuthAdmin(){
+    const token = getToken();
+
+    if(!token) {
+        logout();
+        return;
+    }
+
+    try {
+
+        const decoded = jwt_decode(token);
+
+        if(!decoded.isAdmin){
+            window.location.replace('/scan-page');
+            return;
+        }
+
+    } catch (error) {
+        logout();
+        return;
+    }
+
+  
+}
+// check auth //
+
 
 function logout(){
-localStorage.removeItem('token');
-window.location.replace('/');
+
+    localStorage.removeItem('token');
+    window.location.replace('/');
+
 }

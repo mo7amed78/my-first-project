@@ -6,8 +6,6 @@ const socket = require('./utils/socket');
 const io = socket.init(server);
 const logger = require('./middlewares/logger');
 const {NotFoundRoute,errorHandler} = require('./middlewares/error');
-const verifyToken = require('./middlewares/verifyToken');
-const isAdmin = require('./middlewares/isAdmin')
 const authPath = require('./routes/auth');
 const userPath = require('./routes/users');
 const scanPath = require('./routes/scan');
@@ -54,7 +52,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/login.html')); 
 });
 
-app.get('/scan-page', (req, res) => {
+app.get('/scan-page',(req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/scan.html'));
 });
 

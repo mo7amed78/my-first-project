@@ -20,7 +20,7 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     const {error} = validateNewLecture(req.body);
 
     if(error){
-       return res.status(400).json({message:error.details[0].message})
+       return res.status(400).json({message:error.details[0].message});
     }
 
     const newLecture = new Lecture({
@@ -28,6 +28,12 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     });
 
 
+    const duplicateLecture = await Lecture.findOne({lectureName:req.body.lectureName , stage:req.body.stage});
+    if(duplicateLecture){
+        return res.status(400).json({message:"تم إنشاء هذه المحاضرة مسبقًا لنفس المرحلة"});
+    }
+
+   
     // active lecture //
      await ActiveLecture.updateOne(
         {},
@@ -38,11 +44,6 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     )
     // active lecture //
 
-
-    const duplicateLecture = await Lecture.findOne({lectureName:req.body.lectureName , stage:req.body.stage});
-    if(duplicateLecture){
-        return res.status(400).json({message:"تم إنشاء هذه المحاضرة مسبقًا لنفس المرحلة"});
-    }
 
     const result = await newLecture.save();
 

@@ -67,7 +67,6 @@ const socket = require('../utils/socket');
   * @method POST
   * @access public
   */
-
     router.post('/login',asyncHandler( async(req,res)=>{
         const {error} = validateLoginUser(req.body);
 
@@ -98,6 +97,7 @@ const socket = require('../utils/socket');
             }
         );
 
+
         const {password,__v,isAdmin,...other} = checkLogin._doc;
 
         res.json({...other,token});
@@ -105,6 +105,6 @@ const socket = require('../utils/socket');
         
 
     }));
-   
+
 
 module.exports = router;
