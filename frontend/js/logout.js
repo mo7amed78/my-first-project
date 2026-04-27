@@ -54,11 +54,12 @@ function autoLogout(){
         return;
     }
 
+
     const decode = jwt_decode(token);
     const exp = decode.exp;
     const now = Math.floor(Date.now()/1000);
 
-    
+
     if(exp <= now && !isSessionModalOpen){
     const sessionExpiredModalEl = document.getElementById("sessionExpiredModal");
     isSessionModalOpen = true;
@@ -71,6 +72,7 @@ function autoLogout(){
 
         return;
     }
+
 }
 // verify Token//
 

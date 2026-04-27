@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Scan} = require('../models/Scan');
+const { Lecture } = require('../models/Lecture');
 const {User} = require('../models/User');
 const {egyptTime} = require('../utils/timeEdit');
 const {convertTimeDate_ToDate} = require('../utils/timeEdit');
@@ -11,7 +12,7 @@ const asyncHandler = require('express-async-handler');
 
 
 /**
- * @desc get all scans for (1st & 2nd secondary) & 3rd Preparatory 
+ * @desc get all scans for (1st & 2nd secondary) & 3rd Preparatory all day
  * @route /api/filter?today
  * @method GET
  * @access private (admin only)
@@ -63,6 +64,7 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     const {filterStage,filterLectureId} = req.query;
 
     const filter = {};
+    let infoLecture = null;
 
     if(filterStage){
         filter.stage = filterStage ;
@@ -70,15 +72,30 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
     if(filterLectureId){
         filter.lectureId = filterLectureId;
+        
+         infoLecture = await Lecture.findOne({_id:filterLectureId}).select("lectureName stage date");
+
+         if(infoLecture){
+            infoLecture = {
+                ...infoLecture._doc,
+                timeEdit:egyptTime(infoLecture.date)
+            }
+         }
+
     }
+
+    
     const filterScanRecords = await Scan.find(filter).populate("userId","firstName lastName email stage")
                                               .populate("lectureId","lectureName stage date").select("-__v");
+
+
 
     if(filterScanRecords.length === 0){
         return res.status(200).json({
             message:"لا يوجد نتائج حالياً",
             count:0,
-            filterScan:[]
+            filterScan:[],
+            infoLecture:infoLecture
             
         });
     }
@@ -89,9 +106,10 @@ router.get('/stageLecture',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
 
     }));
 
-
+    
    res.json({
-    count:filterScan.length,  
+    count:filterScan.length,
+    infoLecture:infoLecture,  
     filterScan
     });
    

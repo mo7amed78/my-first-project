@@ -1,10 +1,13 @@
 const express = require ('express');
 const router = express.Router();
 const {User,validateUpdateUser} = require('../models/User');
+const {Scan} = require('../models/Scan');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('../middlewares/verifyToken');
 const isAdmin = require('../middlewares/isAdmin');
+const socket = require('../utils/socket');
+
 
 
 /**
@@ -15,7 +18,6 @@ const isAdmin = require('../middlewares/isAdmin');
  */
 
 router.get('/profile',verifyToken,asyncHandler( async (req,res)=>{
-
 
     const UserProfile = await User.findById(req.user.id).select("-password  -_id  -isAdmin  -__v");
 
@@ -130,6 +132,16 @@ router.put('/:userId',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
         }
     },{new:true});
 
+    const io = socket.getIO();
+
+    io.to(userId).emit("update user data",{
+        U_firstName : UpdatedUser.firstName,
+        U_lastName:UpdatedUser.lastName,
+        U_email:UpdatedUser.email,
+        U_stage:UpdatedUser.stage
+    });
+
+    console.log("updated",UpdatedUser);
     const {password,isAdmin,__v,...other} = await UpdatedUser._doc;
 
     res.json({message:"تم التحديث بنجاح",...other});
@@ -154,6 +166,11 @@ router.delete('/:userId',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     }
 
     const deletedUser = await User.findByIdAndDelete(userId).select("-password -isAdmin -__v");
+    const deleteUserScanned = await Scan.deleteOne({userId:userId});
+        
+    const io = socket.getIO();
+
+    io.to(userId).emit("forceLogout");
 
     res.json({
         message: "تم حذف هذا المستخدم",

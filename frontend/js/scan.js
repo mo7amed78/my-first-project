@@ -172,8 +172,39 @@ const toastScanInstance = bootstrap.Toast.getOrCreateInstance(toast_scan_student
 // show student profile //
 async function studentProfile(){
     const token = getToken();
-
     let student_profile = document.querySelector('.student-profile-body');
+
+    if(token){
+        const decoded = jwt_decode(token);
+        const userId = decoded.id;
+
+        const socket = io();
+
+        socket.on("connect",()=>{
+        console.log("connected websocket");
+
+         socket.emit("joinRoom",userId);
+
+         socket.on("update user data",(data)=>{
+
+        student_profile.innerHTML = `
+        <span>اسم الطالب : ${data.U_firstName} ${data.U_lastName}</span> 
+        <span>البريد الالكتروني : ${data.U_email}</span> 
+        <span> الصف : ${data.U_stage}</span>
+        `
+
+         });
+
+         socket.on("forceLogout",()=>{
+            localStorage.removeItem('token');
+            window.location.replace('/')
+         })
+
+        });
+
+       
+
+    }
    
     try {
         const response = await axios.get(`${BASE_URL}/api/users/profile`,{
@@ -191,6 +222,7 @@ async function studentProfile(){
         `
     } catch (error) {
         console.log(error);
+        
     }
 }
 

@@ -65,6 +65,11 @@ app.get('/dashboard-page', (req, res) => {
 io.on("connection",(socket)=>{
   console.log("socket connect successfully");
   socket.emit("testing",'socket connect successfully');
+
+  //create rooms
+  socket.on("joinRoom",(userId)=>{
+    socket.join(userId);
+  });
 });
 
 

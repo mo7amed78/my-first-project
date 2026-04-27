@@ -9,6 +9,7 @@ axios.interceptors.response.use(
         if (error.response?.status === 401 && !isSessionModalOpen) {
             isSessionModalOpen = true;
             sessionExpiredModal("show");
+            
 
         }
         return Promise.reject(error);

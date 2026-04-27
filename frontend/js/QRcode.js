@@ -122,7 +122,7 @@ async function filterAbsence(){
        return;
     }
 
-    if(!filterStage){
+    if(filterStage === null || filterStage === undefined){
         return;
     }
 
@@ -147,7 +147,7 @@ async function filterAbsence(){
            
         if(students.length === 0 ){
       
-        let  notFoundMsg = response.data.message;
+        let  notFoundMsg = response.data.message || 'لا يوجد نتائج حالياً';
         
             table.innerHTML = `
             <tr>
@@ -167,10 +167,15 @@ async function filterAbsence(){
 
     for(let student of students){
        
-        let firstName = student.userId.firstName;
-        let lastName = student.userId.lastName;
-        let stage = student.userId.stage;
-        let timeEdit = student.timeEdit.split(',')[1];
+        if(!student.userId){
+            continue;
+        }
+
+        let firstName = student.userId?.firstName || "هذا المستخدم تم حذفه";
+        let lastName = student.userId?.lastName || "";
+        let stage = student.userId?.stage || "";
+        let timeEdit = student.timeEdit.split(',')?.[1] || "";
+
 
         let scannedAt = `${timeEdit}`;
 
@@ -194,8 +199,6 @@ async function filterAbsence(){
     }
 
 }
-
-
 
 
 stageChoose.addEventListener('change',(e)=>{
@@ -245,10 +248,11 @@ let err_lecName = document.getElementById('lecName');
         let lectureId = response.data.result._id;
 
         let today = new Date(response.data.result.createdAt);
-
+  
         let date = today.toLocaleDateString("en-CA", {
             timeZone: "Africa/Cairo"
         });
+       
 
         let stage_QR_page = response.data.result.stage;
 
@@ -391,6 +395,21 @@ async function getAttendanceById(lectureId){
         });
 
         let records = response.data.filterScan;
+        let infoLecture = response.data.infoLecture;
+
+        if(infoLecture){
+
+            let lecAttendName = infoLecture.lectureName;
+            let stageAttend = infoLecture.stage;
+            let dateAttend = infoLecture.timeEdit.split(', ')[0].replaceAll("/","-");
+
+            attendHeadInfo.innerHTML = `
+            <h5>${lecAttendName} - ${stageAttend}</h5>
+            <span>${dateAttend}</span>
+
+        `
+        }
+
         let rows = "";
 
         if(records.length === 0){
@@ -410,18 +429,9 @@ async function getAttendanceById(lectureId){
             return;
         }
        
-        let dataLec = records[0].lectureId;
-        let lecAttendName = dataLec.lectureName;
-        let stageAttend = dataLec.stage;
-        let dateAttend = dataLec.date.split("T")[0];
         excelBtn.disabled = false;
 
 
-        attendHeadInfo.innerHTML = `
-            <h5>${lecAttendName} - ${stageAttend}</h5>
-            <span>${dateAttend}</span>
-
-        `
         let counter = 0;
         for(let record of records){
             

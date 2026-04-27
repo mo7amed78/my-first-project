@@ -24,6 +24,13 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
        return res.status(200).json({message:error.details[0].message});
     }
 
+    const checkUserisExist = await User.findById(req.user.id);
+
+    if(!checkUserisExist){
+        return res.status(404).json({message:"User Not Found"});
+    }
+    
+
     const userScaned = new Scan({
         userId:req.user.id,
         lectureId:req.body.lectureId, // عشان اقدر اشوف مين عمل مسح قبل كدا واوقفه
@@ -46,7 +53,7 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
         return res.status(200).json({message:"المحاضرة غير موجودة"});
     }
 
-    if(lecture.stage !== req.user.stage){
+    if(lecture.stage !== checkUserisExist.stage){
         return res.status(200).json({message:"هذه المحاضرة غير مخصصة لمرحلتك"});
     }
 
@@ -70,7 +77,8 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
     filterNumScans.stage = AttendRecord.stage;
     const update_num_scans = await Scan.countDocuments(filterNumScans);
 
-    //test
+    
+    
     const filterNewStudent = {}
     filterNewStudent.userId = AttendRecord.userId;
     filterNewStudent.lectureId = AttendRecord.lectureId;
@@ -96,7 +104,6 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
         ...AttendRecord._doc,
         timeEdit:egyptTime(AttendRecord.scannedAt)
     }
-
    
     res.status(201).json({Attend});
 

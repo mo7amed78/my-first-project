@@ -132,7 +132,7 @@ window.addEventListener('scroll', () => {
 //---add students---//
 let formAdd = document.querySelector('.modal-add-user');
 let modalAddBtn = document.querySelector('.footer-student .modal-user-btn');
-let formAddBtn = document.querySelector(".modal-add-user .fotmAddBtn");
+let formAddBtn = document.querySelector(".modal-add-user .formAddBtn");
 
 function addUser(){
     const token = getToken();
@@ -627,6 +627,8 @@ searchBtn.addEventListener('click',(e)=>{
 // update
 let settingsContent = document.querySelector('.table-studens-data tbody');
 let formUpdate = document.querySelector('.modal-update-user');
+let formUpdateBtn = document.querySelector('.modal-update-user .formUpdateBtn');
+
 
 settingsContent.addEventListener('click',(e)=>{
     //reset
@@ -686,7 +688,9 @@ async function updateStudents(studentId){
             input.classList.add('is-valid');
         });
 
-        document.querySelector('.modal-update-user .div-stage .stage').classList.remove('is-invalid','is-valid');
+        document.querySelector('.modal-update-user .div-stage .stage').classList.remove('is-invalid');
+        document.querySelector('.modal-update-user .div-stage .stage').classList.add('is-valid');
+
 
         document.querySelectorAll('.modal-update-user .invalid-feedback').forEach(msg=>{
             msg.innerHTML = '';
@@ -726,7 +730,13 @@ async function updateStudents(studentId){
 
         document.querySelector('.modal-update-user .div-stage .stage').classList.remove('is-invalid');
 
-        let err_msg = error.response.data.message.toLowerCase();
+        let err_msg = error.response?.data?.message
+
+        if(err_msg){
+            err_msg = err_msg.toLowerCase();
+        }else{
+            err_msg = '';
+        }
         
         let inputs = ["email" ,"password" , "firstname", "lastname" , "stage"];
 
@@ -736,12 +746,16 @@ async function updateStudents(studentId){
                 validateUpdStudent(inp,err_msg);
         }else if(err_msg.includes("الالكتروني")){
             let inp = "email";
-            validateUpdStudent(inp,err_msg)
+            validateUpdStudent(inp,err_msg);
         }
 
         });
 
         
+    } finally {
+        formUpdateBtn.disabled = false;
+
+        formUpdateBtn.innerHTML = "Update";
     }
     
     
@@ -762,19 +776,27 @@ validation.innerHTML = message;
 
 formUpdate.addEventListener("submit",async (e)=>{
     e.preventDefault();
+    formUpdateBtn.disabled = true;
+    
+    formUpdateBtn.innerHTML = `
+    
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+     <span role="status">Updating...</span>
+    
+     `
 
     let studentId = localStorage.getItem('studentId');
-try {
-    await updateStudents(studentId);
-    let page = localStorage.getItem('page') || 1;
+    try {
+        await updateStudents(studentId);
+        let page = localStorage.getItem('page') || 1;
 
-    setTimeout(()=>{
-    getAllStudent(page);
-    },2000)
-    
+        setTimeout(()=>{
+        getAllStudent(page);
+        },2000)
+        
 
-} catch(err) {
-    console.log("حدث خطأ أثناء التحديث", err);
+    } catch(err) {
+        console.log("حدث خطأ أثناء التحديث", err);
 }
 
 });
@@ -802,6 +824,10 @@ settingsContent.addEventListener("click",(e)=>{
 
 });
 
+let deleteBtn = document.querySelector('.modal-form-delete .modal-delete-btn');
+let modalDeleteUserEl = document.getElementById('deleteUser');
+let isDeleted = false;
+
 async function deleteStudents(deleteId){
     const token = getToken();
     
@@ -816,7 +842,6 @@ async function deleteStudents(deleteId){
             }
         });
 
-        console.log(response);
         let msg = response.data.message;
         alertSuccess.innerHTML = msg;
         alertSuccess.classList.remove('d-none');
@@ -837,13 +862,16 @@ async function deleteStudents(deleteId){
         setTimeout(()=>{alertFalied.classList.add('d-none');
         },3000);
         
-    } 
+    } finally {
+
+        const modalDeleted = bootstrap.Modal.getOrCreateInstance(modalDeleteUserEl);
+        modalDeleted.hide();
+        
+        isDeleted = false;
+
+    }
 }
 
-
-let deleteBtn = document.querySelector('.modal-form-delete .modal-delete-btn');
-let modalDeleteUserEl = document.getElementById('deleteUser');
- let isDeleted = false;
 
 deleteBtn.addEventListener('click',async ()=>{
        
@@ -854,18 +882,13 @@ deleteBtn.addEventListener('click',async ()=>{
     if(isDeleted) return;
     isDeleted = true;
 
-
     await deleteStudents(deleteId);
 
-    const modalDeleted = bootstrap.Modal.getOrCreateInstance(modalDeleteUserEl);
-    modalDeleted.hide();
-    
-    isDeleted = false;
      let page = localStorage.getItem('page') || 1;
 
         setTimeout(()=>{
             getAllStudent(page);
-        },1500)
+        },500);
      
 
      localStorage.removeItem('studentDelId');
