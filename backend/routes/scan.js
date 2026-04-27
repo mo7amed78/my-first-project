@@ -30,13 +30,6 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
         return res.status(404).json({message:"User Not Found"});
     }
     
-
-    const userScaned = new Scan({
-        userId:req.user.id,
-        lectureId:req.body.lectureId, // عشان اقدر اشوف مين عمل مسح قبل كدا واوقفه
-        stage:req.user.stage // to use filter only in other routes
-    });
-
     
     const isActiveLec = await ActiveLecture.findOne();
 
@@ -60,6 +53,13 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
     if(duplicateScan){
         return res.status(200).json({message:"لقد قمت بمسح هذه المحاضره مسبقاً"});
     }
+    
+
+    const userScaned = new Scan({
+        userId:req.user.id,
+        lectureId:req.body.lectureId, // عشان اقدر اشوف مين عمل مسح قبل كدا واوقفه
+        stage:checkUserisExist.stage // to use filter only in other routes
+    });
 
     
     
@@ -102,6 +102,8 @@ router.post('/',verifyToken,asyncHandler( async(req,res)=>{
 
     const Attend = {
         ...AttendRecord._doc,
+        firstName:checkUserisExist.firstName,
+        lastName:checkUserisExist.lastName,
         timeEdit:egyptTime(AttendRecord.scannedAt)
     }
    

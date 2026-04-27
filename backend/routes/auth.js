@@ -90,7 +90,7 @@ const socket = require('../utils/socket');
         }
 
         
-        const token = jwt.sign({id:checkLogin._id,firstName:checkLogin.firstName,lastName:checkLogin.lastName,isAdmin:checkLogin.isAdmin,stage:checkLogin.stage},
+        const token = jwt.sign({id:checkLogin._id,isAdmin:checkLogin.isAdmin},
             process.env.JWT_SECRET_KEY,
             {
                 expiresIn:"30d"

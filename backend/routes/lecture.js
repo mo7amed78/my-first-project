@@ -23,15 +23,18 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
        return res.status(400).json({message:error.details[0].message});
     }
 
-    const newLecture = new Lecture({
-        ...req.body
-    });
-
 
     const duplicateLecture = await Lecture.findOne({lectureName:req.body.lectureName , stage:req.body.stage});
     if(duplicateLecture){
         return res.status(400).json({message:"تم إنشاء هذه المحاضرة مسبقًا لنفس المرحلة"});
     }
+
+
+    const newLecture = new Lecture({
+        ...req.body
+    });
+
+    const result = await newLecture.save();
 
    
     // active lecture //
@@ -45,7 +48,6 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     // active lecture //
 
 
-    const result = await newLecture.save();
 
     const today = result.createdAt;
     const filterCountSessionPerDay = {};

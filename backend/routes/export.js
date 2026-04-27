@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Scan} = require('../models/Scan');
+const {Lecture} = require('../models/Lecture');
 const {egyptTime} = require('../utils/timeEdit');
 const exceljs = require('exceljs');
 const asyncHandler = require('express-async-handler');
@@ -17,6 +18,11 @@ const isAdmin = require('../middlewares/isAdmin');
 
 router.get('/excel/:lectureId',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     const lectureId = req.params.lectureId;
+
+    const lecture = await Lecture.findById(lectureId);
+
+    if(!lecture) return;
+    
     const dataRecords = await Scan.find({lectureId:lectureId}).populate("userId","firstName lastName email")
                                                               .populate("lectureId","lectureName date stage")
 

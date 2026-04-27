@@ -115,10 +115,11 @@ axios.post(`${BASE_URL}/api/scan`,bodyParams,{
     let attended = response.status  
     if(attended === 201){
         let timeEdit = response.data.Attend.timeEdit.split(',')[1];
+        let studentName = response.data.Attend;
 
         let scannedAt = ` time ${timeEdit}`;
 
-        let name = `${decode.firstName} ${decode.lastName}`;
+        let name = `${studentName.firstName} ${studentName.lastName}`;
         
         
         toast(scannedAt,name,attended);

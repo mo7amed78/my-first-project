@@ -166,7 +166,7 @@ router.delete('/:userId',verifyToken,isAdmin,asyncHandler( async(req,res)=>{
     }
 
     const deletedUser = await User.findByIdAndDelete(userId).select("-password -isAdmin -__v");
-    const deleteUserScanned = await Scan.deleteOne({userId:userId});
+    const deleteUserScanned = await Scan.deleteMany({userId:userId});
         
     const io = socket.getIO();
 
