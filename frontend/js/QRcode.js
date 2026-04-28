@@ -1,8 +1,5 @@
    
-    BASE_URL =
-    window.location.hostname === "localhost"
-    ?'http://192.168.1.7:3000'
-    :window.location.origin;
+ const BASE_URL = getBaseURL();
 
 
 

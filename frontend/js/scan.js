@@ -1,10 +1,7 @@
 
 setInterval(()=>{autoLogout();},60000);
 
- BASE_URL =
-  window.location.hostname === 'localhost'
-    ? 'http://192.168.1.7:3000'
-    :  window.location.origin;
+ const BASE_URL = getBaseURL();
 
 
 
@@ -84,8 +81,11 @@ btn.addEventListener('click',async ()=>{
 
 // stop camera //
 closeBtn.addEventListener('click', async()=>{
+    if(html5QrCode){
     await html5QrCode.stop();
     await html5QrCode.clear();
+
+    }
     cameraOverlay.classList.remove('active');
     isScanning = false;
 
@@ -124,7 +124,7 @@ axios.post(`${BASE_URL}/api/scan`,bodyParams,{
         
         toast(scannedAt,name,attended);
     }else if(attended === 200){
-        errMesg = response.data.message;
+        let errMesg = response.data.message;
 
         if(errMesg.toLowerCase().includes("lectureid")){
             errMesg = "المحاضرة غير موجودة"
@@ -179,12 +179,12 @@ async function studentProfile(){
         const decoded = jwt_decode(token);
         const userId = decoded.id;
 
-        const socket = io();
-
-        socket.on("connect",()=>{
-        console.log("connected websocket");
+        const socket = getSocket();
 
          socket.emit("joinRoom",userId);
+
+        socket.off("update user data");
+        socket.off("forceLogout");
 
          socket.on("update user data",(data)=>{
 
@@ -201,7 +201,7 @@ async function studentProfile(){
             window.location.replace('/')
          })
 
-        });
+
 
        
 

@@ -1,6 +1,10 @@
 const token =localStorage.getItem('token');
+const BASE_URL = getBaseURL();
 
 if(token){
+
+    try {
+        
     const decode = jwt_decode(token);
 
     if(decode.isAdmin){
@@ -10,6 +14,10 @@ if(token){
         window.location.replace('/scan-page')
 
     }
+    } catch (error) {
+        localStorage.removeItem('token');
+    }
+
 }
 
 
@@ -20,10 +28,6 @@ let form = document.querySelector('form');
 //? login post
 function Login(){
 
-    const BASE_URL =
-  window.location.hostname === 'localhost'
-    ? 'http://192.168.1.7:3000'
-    :  window.location.origin;
 
 
 
@@ -41,15 +45,17 @@ axios.post(`${BASE_URL}/api/auth/login`,bodyParams)
     let token =  response.data.token;
     localStorage.setItem('token',token);
 
+
     const decode = jwt_decode(token);
     if(decode.isAdmin){
         window.location.replace('/dashboard-page');
     }else{
         window.location.replace('/scan-page');
     }
+
+            
      
-})
-.catch((error)=>{
+}).catch((error)=>{
     // reset error
     email.className = 'form-control';
     password.className = 'form-control';

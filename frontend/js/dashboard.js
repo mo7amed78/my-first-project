@@ -2,17 +2,15 @@
     checkAuthAdmin();
     setInterval(()=>{autoLogout()},60000);
 
-    const BASE_URL =
-    window.location.hostname === "localhost"
-    ?'http://192.168.1.7:3000'
-    :window.location.origin;
+    const BASE_URL = getBaseURL();
 
     //--- websocket---//
-    const socket = io();
+    const socket = getSocket() ;
+
     
-    socket.on("connect",()=>{
-        console.log("connected websocket");
-    });
+    socket.off("update_num_student");
+    socket.off("updated_num_present_absent");
+    socket.off("updated_num_session");
 
     socket.on("update_num_student",(num)=>{
     let update_num_student = document.querySelector('.student-infrom p');
@@ -33,6 +31,7 @@
         update_show_num_QR_page.innerHTML = `number : ${ data.update_num_scans}`;
         
         let update_table = data.update_table[0]?.userId;
+        if(!update_table) return;
         
         if(update_table_student.textContent.includes('لا يوجد نتائج حالياً')){
             update_table_student.innerHTML = "";
