@@ -51,7 +51,12 @@ router.get('/',verifyToken,isAdmin,asyncHandler( async (req,res)=>{
 
     // check if no users in db
     if(users.length === 0 || total === 0){
-       return res.status(404).json({message:"لا يوجد مستخدمين"});
+       return res.status(200).json({
+        message:"لا يوجد مستخدمين",
+        count:0,
+        users:[]
+
+    });
         
     }
     

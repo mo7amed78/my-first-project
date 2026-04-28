@@ -316,6 +316,21 @@ function validateNewStudent(id,message){
             localStorage.setItem('page',page);
             num_Student.innerHTML = count;
 
+            if(users.length === 0){
+                tableStudents.innerHTML = `
+                <tr>
+                <th scope="row"></th>
+                <td>${response.data.message}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+
+                
+                `
+
+                return;
+            }
 
             let rows = "";
             let counter = (page - 1) * limit;

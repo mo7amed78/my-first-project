@@ -341,6 +341,10 @@ async function getAllAttendance(){
 
         let Lectures = response.data.get_lecs;
         let rows = "";
+
+        if(!Lectures){
+            return;
+        }
     
         for(let lecture of Lectures){
             rows+=`
