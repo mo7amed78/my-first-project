@@ -99,7 +99,7 @@ router.get('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
     if(get_lecs_records.length === 0){
         return res.status(200).json({
             message:"لا يوجد محاضرات حالياً",
-            count:0,
+            countSession:0,
             lecture:[]
         });
     }
