@@ -1,5 +1,4 @@
 const token =localStorage.getItem('token');
-const BASE_URL = getBaseURL();
 
 if(token){
 

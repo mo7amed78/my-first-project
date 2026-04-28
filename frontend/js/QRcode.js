@@ -1,5 +1,4 @@
    
- const BASE_URL = getBaseURL();
 
 
 

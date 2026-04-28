@@ -2,22 +2,21 @@
     checkAuthAdmin();
     setInterval(()=>{autoLogout()},60000);
 
-    const BASE_URL = getBaseURL();
 
     //--- websocket---//
-    const socket = getSocket() ;
+    const mySocket = getSocket() ;
 
     
-    socket.off("update_num_student");
-    socket.off("updated_num_present_absent");
-    socket.off("updated_num_session");
+    // mySocket.off("update_num_student");
+    // mySocket.off("updated_num_present_absent");
+    // mySocket.off("updated_num_session");
 
-    socket.on("update_num_student",(num)=>{
+    mySocket.on("update_num_student",(num)=>{
     let update_num_student = document.querySelector('.student-infrom p');
         update_num_student.innerHTML = num;
     });
 
-    socket.on("updated_num_present_absent",(data)=>{
+    mySocket.on("updated_num_present_absent",(data)=>{
         let update_present_student = document.querySelector('.present-infrom p');
         let update_absence_student = document.querySelector('.absent-infrom p');
         let update_number_dashboard = document.querySelector('.stage-div .count');
@@ -50,7 +49,7 @@
         `
     });
 
-    socket.on("updated_num_session",(data)=>{
+    mySocket.on("updated_num_session",(data)=>{
         let update_num_of_session = document.querySelector('.scan-infrom p');
         let update_stage_value = document.getElementById('stage-dashboard');
         let update_present_student = document.querySelector('.present-infrom p');
@@ -311,8 +310,13 @@ function validateNewStudent(id,message){
             let limit = response.data.limit;
             let totalPages = response.data.totalPages;
 
-
             localStorage.setItem('page',page);
+
+            if(!page){
+                localStorage.removeItem('page');
+            }
+
+            
             num_Student.innerHTML = count;
 
             if(users.length === 0){
@@ -422,6 +426,8 @@ function validateNewStudent(id,message){
 
         let data = response.data;
         num_of_session.innerHTML = data.countSession; 
+
+        console.log(data)
 
         } catch (error) {
             console.log(error);

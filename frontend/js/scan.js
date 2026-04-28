@@ -1,7 +1,6 @@
 
 setInterval(()=>{autoLogout();},60000);
 
- const BASE_URL = getBaseURL();
 
 
 
@@ -179,14 +178,14 @@ async function studentProfile(){
         const decoded = jwt_decode(token);
         const userId = decoded.id;
 
-        const socket = getSocket();
+        const mySocket = getSocket();
 
-         socket.emit("joinRoom",userId);
+         mySocket.emit("joinRoom",userId);
 
-        socket.off("update user data");
-        socket.off("forceLogout");
+        mySocket.off("update user data");
+        mySocket.off("forceLogout");
 
-         socket.on("update user data",(data)=>{
+         mySocket.on("update user data",(data)=>{
 
         student_profile.innerHTML = `
         <span>اسم الطالب : ${data.U_firstName} ${data.U_lastName}</span> 
