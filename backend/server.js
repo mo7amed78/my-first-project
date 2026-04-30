@@ -30,13 +30,7 @@ mongoose
 
 //middleware
 app.use(express.json());
-app.use(cors({
-  origin:[
-     "http://localhost:3000",
-     "https://education-backend-production-a297.up.railway.app"
-  ],
-  credentials:true
-}));
+app.use(cors());
 app.use(logger);
 
 // Static folders
