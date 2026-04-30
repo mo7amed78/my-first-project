@@ -23,12 +23,10 @@ router.post('/',verifyToken,isAdmin,asyncHandler(async (req,res)=>{
        return res.status(400).json({message:error.details[0].message});
     }
 
-
     const duplicateLecture = await Lecture.findOne({lectureName:req.body.lectureName , stage:req.body.stage});
     if(duplicateLecture){
         return res.status(400).json({message:"تم إنشاء هذه المحاضرة مسبقًا لنفس المرحلة"});
     }
-
 
     const newLecture = new Lecture({
         ...req.body

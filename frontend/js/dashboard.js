@@ -427,7 +427,6 @@ function validateNewStudent(id,message){
         let data = response.data;
         num_of_session.innerHTML = data.countSession; 
 
-        console.log(data)
 
         } catch (error) {
             console.log(error);

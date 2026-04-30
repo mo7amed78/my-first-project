@@ -27,9 +27,16 @@ mongoose
 .then(()=>{console.log("connect to database successfully")})
 .catch((error)=>{console.log("Connection is Faild",error)})
 
+
 //middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin:[
+     "http://localhost:3000",
+     "https://education-backend-production-a297.up.railway.app"
+  ],
+  credentials:true
+}));
 app.use(logger);
 
 // Static folders
@@ -49,15 +56,15 @@ app.use('/api/export',exportPath);
 // Routes لصفحات HTML
 // استبدال اسماء الروابط لما الموقع ينزل
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/html/login.html')); 
+  res.sendFile(path.join(__dirname, '../frontend/index.html')); 
 });
 
 app.get('/scan-page',(req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/html/scan.html'));
+  res.sendFile(path.join(__dirname, '../frontend/scan.html'));
 });
 
 app.get('/dashboard-page', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/html/dashboard.html'));
+  res.sendFile(path.join(__dirname, '../frontend/dashboard.html'));
 });
 
 
