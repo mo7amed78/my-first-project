@@ -90,7 +90,7 @@ function checkAuthAdmin(){
         const decoded = jwt_decode(token);
 
         if(!decoded.isAdmin){
-            window.location.replace('/scan-page');
+            window.location.replace('scan.html');
             return;
         }
 
@@ -107,6 +107,6 @@ function checkAuthAdmin(){
 function logout(){
 
     localStorage.removeItem('token');
-    window.location.replace('/');
+    window.location.replace('/index.html');
 
 }

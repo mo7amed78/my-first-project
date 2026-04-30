@@ -197,7 +197,7 @@ async function studentProfile(){
 
          socket.on("forceLogout",()=>{
             localStorage.removeItem('token');
-            window.location.replace('/')
+            window.location.replace('/index.html')
          })
 
 

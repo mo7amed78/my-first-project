@@ -7,10 +7,10 @@ if(token){
     const decode = jwt_decode(token);
 
     if(decode.isAdmin){
-        window.location.replace('/dashboard-page')
+        window.location.replace('/dashboard.html')
 
     }else{
-        window.location.replace('/scan-page')
+        window.location.replace('/scan.html')
 
     }
     } catch (error) {
@@ -47,9 +47,9 @@ axios.post(`${BASE_URL}/api/auth/login`,bodyParams)
 
     const decode = jwt_decode(token);
     if(decode.isAdmin){
-        window.location.replace('/dashboard-page');
+        window.location.replace('/dashboard.html');
     }else{
-        window.location.replace('/scan-page');
+        window.location.replace('/scan.html');
     }
 
             
